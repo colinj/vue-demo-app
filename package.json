@@ -1,14 +1,20 @@
 {
   "name": "vue-complib",
-  "version": "0.0.0",
+  "version": "0.1.0",
+  "private": true,
+  "author": {
+    "name": "Colin Johnsun",
+    "url": "https://github.com/colinj"
+  },
   "scripts": {
     "dev": "vite",
     "build": "run-p type-check build-only",
     "preview": "vite preview --port 4173",
     "test:unit": "vitest --environment jsdom",
     "build-only": "vite build",
-    "type-check": "vue-tsc --noEmit -p tsconfig.vitest.json --composite false",
-    "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore"
+    "typecheck": "vue-tsc --noEmit -p tsconfig.vitest.json --composite false",
+    "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore",
+    "lint:style": "stylelint src/**/*.{css,scss,vue}"
   },
   "dependencies": {
     "pinia": "^2.0.17",
@@ -24,14 +30,28 @@
     "@vue/eslint-config-typescript": "^11.0.0",
     "@vue/test-utils": "^2.0.2",
     "@vue/tsconfig": "^0.1.3",
+    "autoprefixer": "^10.4.8",
     "eslint": "^8.21.0",
     "eslint-plugin-vue": "^9.3.0",
     "jsdom": "^20.0.0",
     "npm-run-all": "^4.1.5",
+    "postcss": "^8.4.16",
+    "postcss-html": "^1.5.0",
+    "postcss-scss": "^4.0.4",
     "prettier": "^2.7.1",
-    "typescript": "~4.7.4",
+    "sass": "^1.54.8",
+    "stylelint": "^14.11.0",
+    "stylelint-config-html": "^1.1.0",
+    "stylelint-config-prettier": "^9.0.3",
+    "stylelint-config-recommended": "^9.0.0",
+    "stylelint-config-recommended-vue": "^1.4.0",
+    "stylelint-config-standard": "^28.0.0",
+    "stylelint-config-standard-scss": "^5.0.0",
+    "stylelint-order": "^5.0.0",
+    "stylelint-semantic-groups": "^1.1.4",
+    "typescript": "^4.8.2",
     "vite": "^3.0.4",
-    "vitest": "^0.21.0",
-    "vue-tsc": "^0.39.5"
+    "vitest": "^0.22.1",
+    "vue-tsc": "^0.40.5"
   }
 }

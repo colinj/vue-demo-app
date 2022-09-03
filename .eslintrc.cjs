@@ -12,4 +12,8 @@ module.exports = {
   parserOptions: {
     ecmaVersion: "latest",
   },
+  rules: {
+    "no-redeclare": "off",
+    "@typescript-eslint/no-redeclare": "warn",
+  },
 };

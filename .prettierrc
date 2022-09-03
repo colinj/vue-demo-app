@@ -1,0 +1,19 @@
+{
+  "printWidth": 120,
+  "semi": true,
+  "htmlWhitespaceSensitivity": "ignore",
+  "overrides": [
+    {
+      "files": "*.scss",
+      "options": {
+        "printWidth": 200
+      }
+    },
+    {
+      "files": ["SvgSprites.vue", "index.html"],
+      "options": {
+        "printWidth": 3000
+      }
+    }
+  ]
+}

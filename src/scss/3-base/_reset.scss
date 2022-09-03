@@ -72,10 +72,10 @@ select {
   font: inherit;
 }
 
-:root {
-  --border-radius: #{$border-radius-md};
+// :root {
+//   --border-radius: #{$border-radius-md};
 
-  @media (max-width: 640px) {
-    --border-radius: 0;
-  }
-}
+//   @media (max-width: 640px) {
+//     --border-radius: 0;
+//   }
+// }

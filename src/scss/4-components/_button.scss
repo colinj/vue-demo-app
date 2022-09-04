@@ -1,0 +1,188 @@
+@use "sass:map";
+@use "sass:color";
+
+$btn-config: (
+  default: (
+    default: color(gray-100),
+    hover: color(gray-200),
+    active: color(gray-300),
+  ),
+  primary: (
+    default: color(blue-400),
+    hover: color(blue-500),
+    active: color(blue-600),
+  ),
+  secondary: (
+    default: color(gray-400),
+    hover: color(gray-500),
+    active: color(gray-600),
+  ),
+  tertiary: (
+    default: transparent,
+    hover: color(gray-200),
+    active: color(gray-300),
+  ),
+);
+
+@mixin button-style($kind) {
+  --btn-text: #{color-invert(map.get($btn-config, $kind, default))};
+  --btn-color: #{map.get($btn-config, $kind, default)};
+  --btn-border: #{map.get($btn-config, $kind, default)};
+  --btn-hover-color: #{map.get($btn-config, $kind, hover)};
+  --btn-hover-border: #{map.get($btn-config, $kind, hover)};
+  --btn-active-color: #{map.get($btn-config, $kind, active)};
+  --btn-active-border: #{map.get($btn-config, $kind, active)};
+}
+
+:root {
+  @include button-style(default);
+}
+
+.cc-btn {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+
+  min-width: 110px;
+  min-height: 24px;
+  padding: 7px 24px;
+
+  color: var(--btn-text);
+  font-weight: 600;
+  font-size: 14px;
+  text-decoration: none;
+
+  border: 1px solid var(--btn-border);
+  border-radius: $border-radius-sm;
+
+  background-color: var(--btn-color);
+
+  cursor: pointer;
+
+  &:hover {
+    border-color: var(--btn-hover-border);
+
+    background-color: var(--btn-hover-color);
+  }
+
+  &:active {
+    border-color: var(--btn-active-border);
+
+    background-color: var(--btn-active-color);
+  }
+
+  &[disabled],
+  &:disabled {
+    cursor: default;
+
+    opacity: 0.5;
+
+    pointer-events: none;
+  }
+
+  &__caption {
+    display: flex;
+    align-items: center;
+  }
+
+  &__icon {
+    margin-right: 8px;
+    margin-left: -4px;
+  }
+
+  &__icon-right {
+    margin-right: -4px;
+    margin-left: 8px;
+  }
+
+  &--primary {
+    @include button-style((primary));
+  }
+
+  &--secondary {
+    @include button-style((secondary));
+  }
+
+  &--link,
+  &--navlink,
+  &--tertiary {
+    @include button-style((tertiary));
+  }
+
+  &--tertiary {
+    --btn-border: #{color(gray-400)};
+  }
+
+  &--link,
+  &--navlink {
+    --btn-text: currentColor;
+
+    min-width: 0;
+    margin-left: -3px;
+    padding: 0 3px;
+
+    border: 0;
+
+    .cc-btn__icon {
+      margin-left: 0;
+    }
+
+    .cc-btn__icon-right {
+      margin-right: 0;
+    }
+  }
+
+  &--navlink {
+    --btn-text: #{color(blue-500)};
+    font-weight: $font-weight-normal;
+    font-size: inherit;
+  }
+
+  &--nolabel {
+    min-width: 0;
+
+    &:not(.cc-btn--link) {
+      padding: 8px;
+    }
+
+    .cc-btn__icon,
+    .cc-btn__icon-right {
+      margin: 0;
+    }
+
+    .cc-btn__icon + .cc-btn__icon-right {
+      margin-left: 8px;
+    }
+  }
+
+  @at-root #{&}.cc-btn--loading {
+    color: var(--btn-text);
+
+    border: 1px solid var(--btn-border);
+
+    background-color: var(--btn-color);
+
+    opacity: 0.6;
+  }
+
+  .spinner {
+    position: absolute;
+
+    width: 24px;
+    height: 24px;
+    margin: 0;
+
+    border-width: 4px;
+
+    & + .cc-btn__caption {
+      opacity: 0;
+    }
+  }
+}
+
+a.cc-btn {
+  &[disabled],
+  &:disabled {
+    pointer-events: none;
+  }
+}

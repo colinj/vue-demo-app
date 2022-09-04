@@ -1,0 +1,15 @@
+.spinner {
+  content: " ";
+
+  display: inline-block;
+
+  width: 64px;
+  height: 64px;
+  margin: 8px;
+
+  border: 6px solid currentColor;
+  border-color: transparent currentColor currentColor;
+  border-radius: 50%;
+
+  animation: rotate 1.2s cubic-bezier(0.17, 0.67, 0.83, 0.67) infinite;
+}

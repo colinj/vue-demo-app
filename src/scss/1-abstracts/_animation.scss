@@ -1,0 +1,30 @@
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.shake {
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+
+  animation: shake 0.3s linear both infinite;
+}
+
+@keyframes shake {
+  0%,
+  50%,
+  100% {
+    transform: translate3d(-4px, 0, 0);
+  }
+
+  25%,
+  75% {
+    transform: translate3d(4px, 0, 0);
+  }
+}

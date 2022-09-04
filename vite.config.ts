@@ -9,6 +9,7 @@ export default defineConfig({
   resolve: {
     alias: {
       "@": fileURLToPath(new URL("./src", import.meta.url)),
+      "@fa": fileURLToPath(new URL("./src/assets/fontawesome", import.meta.url)),
     },
   },
   css: {

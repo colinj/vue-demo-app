@@ -8,14 +8,6 @@
   }
 }
 
-.shake {
-  transform: translate3d(0, 0, 0);
-  backface-visibility: hidden;
-  perspective: 1000px;
-
-  animation: shake 0.3s linear both infinite;
-}
-
 @keyframes shake {
   0%,
   50%,
@@ -27,4 +19,28 @@
   75% {
     transform: translate3d(4px, 0, 0);
   }
+}
+
+.shake {
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+
+  animation: shake 0.3s linear both infinite;
+}
+
+.spinner {
+  content: " ";
+
+  display: inline-block;
+
+  width: 64px;
+  height: 64px;
+  margin: 8px;
+
+  border: 6px solid currentColor;
+  border-color: transparent currentColor currentColor;
+  border-radius: 50%;
+
+  animation: rotate 1.2s cubic-bezier(0.17, 0.67, 0.83, 0.67) infinite;
 }

@@ -1,0 +1,110 @@
+$radio-size: 20px !default;
+$radio-timing: 0.1s;
+$easing: ease-out;
+
+:root {
+  --radio-color: var(--blue-500);
+  --radio-rgb: var(--rgb-success);
+}
+
+%radio-button {
+  position: absolute;
+  left: var(--radio-pos);
+  content: "";
+
+  display: inline-flex;
+
+  width: $radio-size;
+  height: $radio-size;
+
+  border: clamp(1px, 0.125em, 6px) solid $border-color;
+  border-radius: 50%;
+}
+
+.cc-radio {
+  --radio-pos: 0;
+
+  position: relative;
+
+  display: flex;
+  align-items: center;
+
+  &__label {
+    position: relative;
+
+    display: flex;
+    align-items: center;
+
+    padding-left: 8px + $radio-size;
+
+    cursor: pointer;
+
+    &::before {
+      @extend %radio-button;
+      background-color: #fff;
+
+      transition: background $radio-timing $easing;
+    }
+
+    &::after {
+      @extend %radio-button;
+      border-color: transparent;
+
+      background-color: var(--radio-color);
+
+      transform: scale(0);
+
+      transition: transform $radio-timing $easing;
+    }
+  }
+
+  &--inline {
+    display: inline-block;
+
+    margin-right: 24px;
+  }
+
+  &--outline {
+    --radio-pos: 16px;
+    padding: 7px 16px 7px (24px + $radio-size);
+
+    border: 1px solid color(grey-300);
+    border-radius: $border-radius-sm;
+  }
+
+  &--disabled {
+    opacity: 0.5;
+
+    pointer-events: none;
+  }
+
+  input[type="radio"] {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+
+    outline: none;
+
+    opacity: 0;
+
+    &:hover + .cc-radio__label::before {
+      border-color: color(grey-800);
+    }
+
+    &:focus-visible + .cc-radio__label {
+      outline: 1px solid var(--checkbox-color);
+      outline-offset: 4px;
+    }
+
+    &:checked + .cc-radio__label {
+      &::after {
+        transform: scale(0.5);
+      }
+
+      &.cc-radio--outline {
+        background-color: color(green-100);
+      }
+    }
+  }
+}

@@ -3,9 +3,9 @@
 
 $btn-config: (
   default: (
-    default: color(gray-100),
-    hover: color(gray-200),
-    active: color(gray-300),
+    default: color(grey-100),
+    hover: color(grey-200),
+    active: color(grey-300),
   ),
   primary: (
     default: color(blue-400),
@@ -13,14 +13,14 @@ $btn-config: (
     active: color(blue-600),
   ),
   secondary: (
-    default: color(gray-400),
-    hover: color(gray-500),
-    active: color(gray-600),
+    default: color(grey-400),
+    hover: color(grey-500),
+    active: color(grey-600),
   ),
   tertiary: (
     default: transparent,
-    hover: color(gray-200),
-    active: color(gray-300),
+    hover: color(grey-200),
+    active: color(grey-300),
   ),
 );
 
@@ -110,7 +110,7 @@ $btn-config: (
   }
 
   &--tertiary {
-    --btn-border: #{color(gray-400)};
+    --btn-border: #{color(grey-400)};
   }
 
   &--link,

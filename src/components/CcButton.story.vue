@@ -34,6 +34,25 @@ const kind = ref<ButtonKind>("" as ButtonKind);
       </Variant>
     </template>
 
+    <Variant title="Left icon only">
+      <CcButton kind="primary" icon="house"></CcButton>
+    </Variant>
+    <Variant title="Right icon only">
+      <CcButton kind="primary" icon-right="arrow-right"></CcButton>
+    </Variant>
+    <Variant title="Both icons only">
+      <CcButton kind="primary" icon="house" icon-right="arrow-right"></CcButton>
+    </Variant>
+    <Variant title="Left Icon">
+      <CcButton kind="primary" icon="house">Click me</CcButton>
+    </Variant>
+    <Variant title="Right Icon">
+      <CcButton kind="primary" icon-right="arrow-right">Click me</CcButton>
+    </Variant>
+    <Variant title="Both icons ">
+      <CcButton kind="primary" icon="house" icon-right="arrow-right">Click me</CcButton>
+    </Variant>
+
     <template #controls>
       <HstText v-model="state.label" title="Label" />
       <HstSelect v-model="kind" :options="['default', ...buttonKind]" title="Kind" />

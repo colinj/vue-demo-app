@@ -50,11 +50,11 @@ const tabIndex = computed(() =>
   >
     <div v-if="loading" class="spinner"></div>
     <div class="cc-btn__caption">
-      <CcIcon v-if="icon" class="cc-btn__icon" size="1em" :name="icon" />
+      <CcIcon v-if="icon" class="cc-btn__icon" :name="icon" />
       <slot>
         {{ props.label }}
       </slot>
-      <CcIcon v-if="iconRight" class="cc-btn__icon-right" size="1em" :name="iconRight" />
+      <CcIcon v-if="iconRight" class="cc-btn__icon-right" :name="iconRight" />
     </div>
   </component>
 </template>

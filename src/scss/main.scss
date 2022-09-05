@@ -2,11 +2,4 @@
 
 @import "./1-abstracts/all";
 @import "./3-base/all";
-
-:root {
-  @each $name, $indices in $colors {
-    @each $index, $color in $indices {
-      --#{$name}-#{$index}: #{$color};
-    }
-  }
-}
+@import "./4-components/all";

@@ -1,0 +1,7 @@
+:root {
+  @each $name, $indices in $colors {
+    @each $index, $color in $indices {
+      --#{$name}-#{$index}: #{$color};
+    }
+  }
+}

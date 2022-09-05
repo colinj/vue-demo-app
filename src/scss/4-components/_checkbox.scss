@@ -1,0 +1,158 @@
+@use "sass:color";
+
+$checkbox-size: 20px !default;
+$speed-slow: 0.15s;
+$easing: ease-out;
+
+:root {
+  --checkbox-color: var(--blue-500);
+}
+
+%checkbox-control {
+  position: absolute;
+  left: 0;
+  content: "";
+
+  display: inline-flex;
+
+  width: $checkbox-size;
+  height: $checkbox-size;
+
+  border: clamp(1px, 0.125em, 6px) solid $border-color;
+  border-radius: 2px;
+
+  background-color: #fff;
+}
+
+.cc-checkbox {
+  position: relative;
+
+  display: flex;
+  align-items: center;
+
+  padding: 8px 0;
+
+  &__label {
+    position: relative;
+
+    display: flex;
+    align-items: center;
+
+    padding-left: 12px + $checkbox-size;
+
+    cursor: pointer;
+
+    &::before {
+      @extend %checkbox-control;
+      transition: background-color $speed-slow $easing;
+    }
+
+    &::after {
+      @extend %checkbox-control;
+      border-color: transparent;
+
+      background-color: transparent;
+
+      opacity: 0;
+
+      transition: background-color $speed-slow $easing;
+    }
+  }
+
+  &__check {
+    position: absolute;
+    top: calc((100% - 11px) / 2);
+    left: 4px;
+    z-index: 1;
+
+    width: 12px;
+    height: 10px;
+
+    fill: none;
+    stroke: white;
+    opacity: 0;
+
+    transition: all $speed-slow ease-out;
+    stroke-dasharray: 16px;
+    stroke-dashoffset: 16px;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 2;
+  }
+
+  &--disabled {
+    opacity: 0.5;
+
+    pointer-events: none;
+  }
+
+  input[type="checkbox"] {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+
+    outline: none;
+
+    opacity: 0;
+
+    &:hover + .cc-checkbox__label::before {
+      border-color: color(grey-800);
+    }
+
+    &:focus-visible + .cc-checkbox__label {
+      outline: 1px solid var(--checkbox-color);
+      outline-offset: 4px;
+    }
+
+    &:checked + .cc-checkbox__label {
+      &::after {
+        border-color: var(--checkbox-color);
+
+        background-color: var(--checkbox-color);
+
+        opacity: 1;
+      }
+
+      .cc-checkbox__check {
+        opacity: 1;
+        stroke-dashoffset: 0;
+
+        transition: stroke-dashoffset 0.125s 0.075s, opacity 0s;
+      }
+    }
+
+    /* stylelint-disable-next-line order/order */
+    &:indeterminate + .cc-checkbox__label {
+      &::before {
+        content: "";
+
+        border-color: color(green-400);
+
+        background-color: color(green-400);
+
+        opacity: 1;
+
+        transition: none;
+      }
+
+      &::after {
+        left: 4px;
+        content: "";
+
+        width: 12px;
+        height: 2px;
+
+        border: 0;
+
+        background-color: #fff;
+
+        opacity: 1;
+      }
+
+      .cc-checkbox__check {
+        opacity: 0;
+      }
+    }
+  }
+}

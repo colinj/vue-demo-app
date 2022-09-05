@@ -23,13 +23,10 @@ const emit = defineEmits<{
 
 const id = uniqueId("radio");
 const selected = ref<string>();
-const radioOptions = computed<[string, string][]>(() => {
-  if (Array.isArray(props.options)) {
-    return props.options.map((s) => [s, s]);
-  } else {
-    return Object.entries(props.options);
-  }
-});
+const radioOptions = computed<[string, string][]>(() =>
+  Array.isArray(props.options) ? props.options.map((s) => [s, s]) : Object.entries(props.options)
+);
+
 watch(selected, (val) => emit("update:modelValue", val), { immediate: true });
 </script>
 

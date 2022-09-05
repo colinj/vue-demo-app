@@ -1,0 +1,77 @@
+@use "sass:map";
+
+:root {
+  --pill-text: var(--green-500);
+  --pill-color: var(--green-100);
+}
+
+.cc-pill {
+  position: relative;
+
+  display: inline-flex;
+  align-items: center;
+
+  padding: 4px 8px;
+
+  color: var(--pill-text);
+  font-weight: $font-weight-strong;
+  font-size: $font-xs;
+  font-family: $body-font;
+  line-height: 16px;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+  text-transform: uppercase;
+
+  border-radius: 999px;
+
+  background-color: var(--pill-color);
+
+  &__button {
+    display: inline-flex;
+
+    margin-right: -4px;
+    margin-left: 4px;
+    padding: 2px;
+
+    color: var(--pill-text);
+
+    border: 0;
+    border-radius: 50%;
+
+    background-color: transparent;
+
+    cursor: pointer;
+
+    &:hover {
+      color: var(--pill-color);
+
+      background-color: var(--pill-text);
+
+      transform: scale(1.1);
+    }
+  }
+
+  &--white,
+  &--border {
+    box-shadow: box-shadow-border(currentColor);
+  }
+
+  &--lg {
+    padding: 6px 12px;
+
+    .cc-pill__button {
+      margin-right: -6px;
+      margin-left: 6px;
+    }
+  }
+
+  &--sm {
+    padding: 2px 8px;
+
+    font-size: 9px;
+
+    .cc-pill__button {
+      margin-left: 3px;
+    }
+  }
+}

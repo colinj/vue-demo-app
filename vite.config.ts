@@ -20,6 +20,7 @@ export default defineConfig({
           @use "sass:color";
           @use "sass:map";
           @use "sass:math";
+          @import "@/scss/1-abstracts/all";
         `,
       },
     },

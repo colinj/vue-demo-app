@@ -23,7 +23,6 @@
   );
 
   @each $name, $value in $color-rgb {
-    $adjusted: 0;
     $value: math.div($value, 255);
 
     @if $value <= 0.04045 {

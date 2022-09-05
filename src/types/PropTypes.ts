@@ -1,6 +1,5 @@
 import type { Ref } from "vue";
-import type { buttonKind } from "@/utils/button-kind";
-import type { colorNames, colorShades } from "@/utils/colors";
+import type { colorNames, colorShades, buttonKind } from "@/utils/prop-types";
 import type { iconNames } from "@/utils/icon-names";
 
 export type ButtonKind = typeof buttonKind[number];

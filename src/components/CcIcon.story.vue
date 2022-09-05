@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { reactive, ref, watch } from "vue";
 import type { ColorKind, IconKind } from "@/types";
-import { colorNames, colorShades } from "@/utils/colors";
+import { colorNames, colorShades } from "@/utils/prop-types";
 import CcIcon from "./CcIcon.vue";
 
 const state = reactive({

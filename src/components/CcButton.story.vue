@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { reactive, ref } from "vue";
-import { buttonKind } from "@/utils/button-kind";
+import { buttonKind } from "@/utils/prop-types";
 import CcButton from "./CcButton.vue";
 import type { ButtonKind, IconKind } from "@/types";
 

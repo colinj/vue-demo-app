@@ -106,3 +106,10 @@ $colors: (
   $index: string.slice($name, $dash + 1);
   @return map.get($colors, $color, $index);
 }
+
+$colors-theme: (
+  success: color(green-500),
+  error: color(red-700),
+  warning: color(yellow-400),
+  info: color(blue-400),
+);

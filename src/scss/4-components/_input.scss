@@ -1,0 +1,70 @@
+$border-color: color(grey-400);
+
+.cc-input {
+  position: relative;
+
+  &__control {
+    width: 100% !important;
+    padding: 7px 8px 7px 16px;
+
+    border: 1px solid $border-color;
+    border-radius: $border-radius-sm;
+
+    &::placeholder {
+      color: color(grey-400);
+    }
+
+    &:focus,
+    &:hover {
+      border-color: color(grey-800);
+    }
+
+    &:focus-visible {
+      outline: none;
+    }
+
+    &:disabled {
+      color: color(grey-400);
+
+      border-color: $border-color;
+
+      background-color: color(grey-100);
+
+      &::placeholder {
+        color: transparent;
+      }
+    }
+
+    &[readonly] {
+      color: color(grey-600);
+
+      border-color: color(grey-200);
+
+      background-color: color(grey-100);
+
+      cursor: default;
+
+      &::placeholder {
+        color: transparent;
+      }
+    }
+  }
+
+  &__icon {
+    position: absolute;
+    top: 12px;
+    right: 10px;
+
+    + .cc-input__control {
+      padding-right: 32px;
+    }
+  }
+
+  &--textarea + .cc-field__message {
+    margin-top: -0.5em;
+  }
+
+  &--error:not(:disabled) {
+    border-color: theme-color(error);
+  }
+}

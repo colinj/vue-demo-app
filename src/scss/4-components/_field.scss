@@ -24,23 +24,6 @@
     color: theme-color(error);
   }
 
-  &--error {
-    .cc-input {
-      &__control:not(:disabled) {
-        border-color: theme-color(error);
-
-        &:focus,
-        &:hover {
-          border-color: theme-color(error);
-        }
-      }
-
-      &__message {
-        display: block;
-      }
-    }
-  }
-
   small {
     display: block;
 

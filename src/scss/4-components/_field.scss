@@ -1,0 +1,50 @@
+.cc-field {
+  display: block;
+
+  &__label {
+    display: block;
+
+    margin-bottom: 8px;
+
+    font-weight: $font-weight-strong;
+    font-size: 14px;
+    line-height: 16px;
+  }
+
+  &__hint {
+    margin-top: -4px;
+    margin-bottom: 4px;
+
+    color: color(grey-500);
+  }
+
+  &__message {
+    display: none;
+
+    color: theme-color(error);
+  }
+
+  &--error {
+    .cc-input {
+      &__control:not(:disabled) {
+        border-color: theme-color(error);
+
+        &:focus,
+        &:hover {
+          border-color: theme-color(error);
+        }
+      }
+
+      &__message {
+        display: block;
+      }
+    }
+  }
+
+  small {
+    display: block;
+
+    font-size: 12px;
+    line-height: 20px;
+  }
+}

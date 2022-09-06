@@ -1,9 +1,22 @@
 <script setup lang="ts">
 import { ref } from "vue";
+import { useElementBounding } from "@vueuse/core";
 import CcIcon from "./CcIcon.vue";
+import { computed } from "vue";
 
 const inputValue = ref("");
 const isOpen = ref(false);
+
+const selectEl = ref(null);
+const { top, left, height, width } = useElementBounding(selectEl);
+const optionsPos = computed(() => {
+  const body = document.body.getBoundingClientRect();
+  return {
+    top: `${top.value - body.top + height.value - 1}px`,
+    width: `${width.value}px`,
+    left: `${left.value}px`,
+  };
+});
 
 const toggleMenu = (val?: boolean) => {
   isOpen.value = val === undefined ? !isOpen.value : val;
@@ -17,7 +30,9 @@ const toggleMenu = (val?: boolean) => {
       <button class="cc-select__toggle" @click="toggleMenu()">
         <CcIcon name="chevron-down" />
       </button>
-      <ul v-if="isOpen" class="cc-option">
+    </div>
+    <teleport to="body">
+      <ul v-if="isOpen" class="cc-option" :style="optionsPos">
         <li>Tom</li>
         <li>Jane</li>
         <li>Peter</li>
@@ -27,14 +42,12 @@ const toggleMenu = (val?: boolean) => {
         <li>Amanda</li>
         <li>Billy</li>
       </ul>
-    </div>
+    </teleport>
   </div>
 </template>
 
 <style lang="scss" scoped>
 .cc-select {
-  position: relative;
-
   display: flex;
   align-items: center;
 

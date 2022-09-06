@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from "vue";
-import { useElementBounding } from "@vueuse/core";
+import { onClickOutside, useElementBounding } from "@vueuse/core";
 import CcIcon from "./CcIcon.vue";
 import { computed } from "vue";
 
@@ -8,6 +8,7 @@ const inputValue = ref("");
 const isOpen = ref(false);
 
 const selectEl = ref(null);
+onClickOutside(selectEl, () => (isOpen.value = false));
 const { top, left, height, width } = useElementBounding(selectEl);
 const optionsPos = computed(() => {
   const body = document.body.getBoundingClientRect();

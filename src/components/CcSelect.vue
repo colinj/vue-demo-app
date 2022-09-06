@@ -18,6 +18,7 @@ const props = withDefaults(defineProps<Props>(), {
 const emit = defineEmits<{
   (e: "update:modelValue", v: SelectValueType): void;
 }>();
+
 const inputValue = ref();
 const isOpen = ref(false);
 const toggleMenu = (val?: boolean) => {
@@ -95,18 +96,23 @@ const selectOption = (val: string) => {
   display: flex;
   align-items: center;
 
-  padding: 4px 8px;
-
   border: 1px solid black;
   border-radius: $border-radius-sm;
 
   &__input {
     width: 100%;
+    margin: 4px 0 4px 8px;
+
+    border: 0;
   }
 
   &__toggle {
     display: grid;
     place-content: center;
+
+    padding: 8px;
+
+    border: 0;
 
     background-color: transparent;
 
@@ -116,6 +122,9 @@ const selectOption = (val: string) => {
   }
 
   &--open {
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
+
     .cc-select__toggle svg {
       transform: rotate(180deg);
     }
@@ -128,7 +137,7 @@ const selectOption = (val: string) => {
   padding: 4px 8px;
 
   border: 1px solid black;
-  border-radius: $border-radius-sm;
+  border-radius: 0 0 $border-radius-sm $border-radius-sm;
 
   background-color: #fff;
 

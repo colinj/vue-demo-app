@@ -4,14 +4,17 @@ import { onClickOutside, useElementBounding, useTemplateRefsList } from "@vueuse
 import CcIcon from "./CcIcon.vue";
 
 interface Props {
-  modelValue: string | undefined;
+  modelValue?: string | undefined;
   options: string[];
+  allowEmpty?: boolean;
 }
-const props = defineProps<Props>();
+const props = withDefaults(defineProps<Props>(), {
+  allowEmpty: false,
+});
 const emit = defineEmits<{
   (e: "update:modelValue", v: string | undefined): void;
 }>();
-const inputValue = ref("");
+const inputValue = ref();
 const isOpen = ref(false);
 const toggleMenu = (val?: boolean) => {
   isOpen.value = val === undefined ? !isOpen.value : val;
@@ -37,8 +40,9 @@ const optionClasses = (val: string) => {
   };
 };
 const selectOption = (val: string) => {
-  inputValue.value = val;
-  emit("update:modelValue", val);
+  const selected = props.allowEmpty && val === props.modelValue ? undefined : val;
+  inputValue.value = selected;
+  emit("update:modelValue", selected);
 };
 </script>
 

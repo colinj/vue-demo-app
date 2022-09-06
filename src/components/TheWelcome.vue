@@ -97,7 +97,7 @@ const name = ref("");
   </WelcomeItem>
 
   <div>{{ name }}</div>
-  <CcSelect v-model="name" :options="names" />
+  <CcSelect v-model="name" :options="names" allow-empty />
 
   <WelcomeItem>
     <template #icon>

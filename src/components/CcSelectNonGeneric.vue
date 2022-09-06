@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from "vue";
 import { onClickOutside, useElementBounding, useMouseInElement, useTemplateRefsList } from "@vueuse/core";
+import { pluralise } from "@/utils/pluralise";
 import CcIcon from "./CcIcon.vue";
 
 type SelectOptionType = string | Record<string, unknown>;
@@ -98,6 +99,7 @@ const selectOption = (option: SelectOptionType) => {
         <span v-if="!Array.isArray(props.modelValue)">
           {{ getLabel(props.modelValue) }}
         </span>
+        <span v-else>{{ pluralise(props.modelValue.length, "option") }} selected</span>
       </div>
       <button class="cc-select__toggle" @click="toggleMenu()">
         <CcIcon name="chevron-down" />

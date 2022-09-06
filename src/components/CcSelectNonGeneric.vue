@@ -10,13 +10,15 @@ type SelectValueType = SelectOptionType | SelectOptionType[] | undefined;
 interface Props {
   modelValue?: SelectValueType;
   options: SelectOptionType[];
+  label?: string | ((option: Record<string, unknown>) => string);
   allowEmpty?: boolean;
   multiple?: boolean;
-  label?: string | ((option: Record<string, unknown>) => string);
+  searchable?: boolean;
 }
 const props = withDefaults(defineProps<Props>(), {
   allowEmpty: false,
   multiple: false,
+  searchable: false,
 });
 const emit = defineEmits<{
   (e: "update:modelValue", v: SelectValueType): void;
@@ -91,7 +93,12 @@ const selectOption = (option: SelectOptionType) => {
 <template>
   <div>
     <div ref="selectEl" class="cc-select" :class="{ 'cc-select--open': isOpen }">
-      <input class="cc-select__input" v-model="inputValue" />
+      <input v-if="props.searchable" class="cc-select__input" v-model="inputValue" />
+      <div v-else class="cc-select__tags" @click="toggleMenu()">
+        <span v-if="!Array.isArray(props.modelValue)">
+          {{ getLabel(props.modelValue) }}
+        </span>
+      </div>
       <button class="cc-select__toggle" @click="toggleMenu()">
         <CcIcon name="chevron-down" />
       </button>
@@ -126,6 +133,15 @@ const selectOption = (option: SelectOptionType) => {
     margin: 4px 0 4px 8px;
 
     border: 0;
+  }
+
+  &__tags {
+    display: flex;
+    align-items: center;
+
+    width: 100%;
+    min-height: 26px;
+    margin: 4px 0 4px 10px;
   }
 
   &__toggle {

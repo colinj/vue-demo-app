@@ -22,6 +22,7 @@ const state = reactive({
   disabled: false,
   multiple: false,
   allowEmpty: false,
+  searchable: false,
 });
 </script>
 
@@ -34,6 +35,7 @@ const state = reactive({
           :options="names"
           :multiple="state.multiple"
           :allow-empty="state.allowEmpty"
+          :searchable="state.searchable"
           :disabled="state.disabled"
         />
       </div>
@@ -71,6 +73,7 @@ const state = reactive({
     <template #controls>
       <HstCheckbox v-model="state.allowEmpty" title="Allow empty" />
       <HstCheckbox v-model="state.multiple" title="Multiple" />
+      <HstCheckbox v-model="state.searchable" title="Searchable" />
       <HstCheckbox v-model="state.disabled" title="Disabled" />
     </template>
   </Story>

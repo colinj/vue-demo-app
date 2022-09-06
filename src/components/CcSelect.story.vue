@@ -1,17 +1,28 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { reactive, ref } from "vue";
 import CcSelect from "./CcSelect.vue";
 
-const name1 = ref<string[]>([]);
+const names = ref(["Tom", "Jane", "Peter", "Mary", "Jordan", "Polly", "Amanda", "Billy"]);
+const name1 = ref<string>();
 // const name2 = ref<string[]>([]);
-const disabled = ref(false);
+const state = reactive({
+  disabled: false,
+  multiple: false,
+  allowEmpty: false,
+});
 </script>
 
 <template>
-  <Story title="CcSelect" :layout="{ type: 'grid', width: '100%' }">
+  <Story title="CcSelect">
     <Variant title="Options array">
       <div class="playground">
-        <CcSelect v-model="name1" :options="['Tom', 'Peter', 'Mary']" :disabled="disabled" />
+        <CcSelect
+          v-model="name1"
+          :options="names"
+          :multiple="state.multiple"
+          :allow-empty="state.allowEmpty"
+          :disabled="state.disabled"
+        />
       </div>
       <div>{{ name1 }}</div>
     </Variant>
@@ -28,7 +39,9 @@ const disabled = ref(false);
     </Variant> -->
 
     <template #controls>
-      <HstCheckbox v-model="disabled" title="Disabled" />
+      <HstCheckbox v-model="state.allowEmpty" title="Allow empty" />
+      <HstCheckbox v-model="state.multiple" title="Multiple" />
+      <HstCheckbox v-model="state.disabled" title="Disabled" />
     </template>
   </Story>
 </template>

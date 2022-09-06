@@ -1,18 +1,22 @@
 <script setup lang="ts">
 import { computed, ref } from "vue";
-import { onClickOutside, useElementBounding, useTemplateRefsList } from "@vueuse/core";
+import { onClickOutside, useElementBounding, useMouseInElement, useTemplateRefsList } from "@vueuse/core";
 import CcIcon from "./CcIcon.vue";
 
+type SelectValueType = string | string[] | undefined;
+
 interface Props {
-  modelValue?: string | undefined;
+  modelValue?: SelectValueType;
   options: string[];
   allowEmpty?: boolean;
+  multiple?: boolean;
 }
 const props = withDefaults(defineProps<Props>(), {
   allowEmpty: false,
+  multiple: false,
 });
 const emit = defineEmits<{
-  (e: "update:modelValue", v: string | undefined): void;
+  (e: "update:modelValue", v: SelectValueType): void;
 }>();
 const inputValue = ref();
 const isOpen = ref(false);
@@ -22,7 +26,12 @@ const toggleMenu = (val?: boolean) => {
 };
 
 const selectEl = ref(null);
-onClickOutside(selectEl, () => (isOpen.value = false));
+onClickOutside(selectEl, () => {
+  console.log(props.multiple, isOutside.value);
+  if (!props.multiple || isOutside.value) {
+    isOpen.value = false;
+  }
+});
 const { top, left, height, width, update } = useElementBounding(selectEl);
 const optionsPos = computed(() => {
   const body = document.body.getBoundingClientRect();
@@ -33,16 +42,26 @@ const optionsPos = computed(() => {
   };
 });
 
+const optionEl = ref(null);
+const { isOutside } = useMouseInElement(optionEl);
 const optionEls = useTemplateRefsList<HTMLDivElement>();
 const optionClasses = (val: string) => {
   return {
-    "cc-option--selected": props.modelValue === val,
+    "cc-option--selected":
+      props.multiple && Array.isArray(props.modelValue) ? props.modelValue.includes(val) : props.modelValue === val,
   };
 };
 const selectOption = (val: string) => {
-  const selected = props.allowEmpty && val === props.modelValue ? undefined : val;
-  inputValue.value = selected;
-  emit("update:modelValue", selected);
+  if (props.multiple) {
+    const model =
+      props.modelValue === undefined ? [] : Array.isArray(props.modelValue) ? props.modelValue : [props.modelValue];
+    const items = model.includes(val) ? model.filter((x) => x !== val) : [...model, val];
+    emit("update:modelValue", items);
+  } else {
+    const selected = props.allowEmpty && val === props.modelValue ? undefined : val;
+    inputValue.value = selected;
+    emit("update:modelValue", selected);
+  }
 };
 </script>
 
@@ -55,7 +74,7 @@ const selectOption = (val: string) => {
       </button>
     </div>
     <teleport to="body">
-      <ul v-if="isOpen" class="cc-option" :style="optionsPos">
+      <ul v-if="isOpen" ref="optionEl" class="cc-option" :style="optionsPos">
         <li
           v-for="option in props.options"
           :key="option"

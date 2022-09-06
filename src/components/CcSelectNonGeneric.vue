@@ -174,7 +174,7 @@ const selectOption = (option: SelectOptionType) => {
 .cc-option {
   position: absolute;
 
-  padding: 4px 8px;
+  padding: 4px 0;
 
   border: 1px solid black;
   border-radius: 0 0 $border-radius-sm $border-radius-sm;
@@ -182,6 +182,10 @@ const selectOption = (option: SelectOptionType) => {
   background-color: #fff;
 
   &__item {
+    padding: 0 8px;
+
+    line-height: 2;
+
     &:hover {
       background-color: color(blue-200);
     }

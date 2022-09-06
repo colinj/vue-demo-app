@@ -61,9 +61,8 @@ const getLabelFn = computed(() => {
   return () => "label property undefined for options object array";
 });
 
-const getLabel = (option: SelectOptionType) => {
-  return typeof option === "string" ? option : getLabelFn.value(option);
-};
+const getLabel = (option: SelectOptionType | undefined) =>
+  option === undefined || typeof option === "string" ? option : getLabelFn.value(option);
 
 const optionClasses = (option: SelectOptionType) => {
   return {
@@ -83,7 +82,7 @@ const selectOption = (option: SelectOptionType) => {
     }
   } else {
     const selected = props.allowEmpty && option === props.modelValue ? undefined : option;
-    inputValue.value = selected;
+    inputValue.value = getLabel(selected);
     emit("update:modelValue", selected);
   }
 };

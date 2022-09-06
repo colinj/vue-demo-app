@@ -48,6 +48,20 @@ const state = reactive({
       <div>{{ name2 }}</div>
     </Variant>
 
+    <Variant title="Options object array with label function">
+      <div class="playground">
+        <CcSelect
+          v-model="name2"
+          :options="people"
+          :label="(val) => `${val.name} is awesome!`"
+          :multiple="state.multiple"
+          :allow-empty="state.allowEmpty"
+          :disabled="state.disabled"
+        />
+      </div>
+      <div>{{ name2 }}</div>
+    </Variant>
+
     <template #controls>
       <HstCheckbox v-model="state.allowEmpty" title="Allow empty" />
       <HstCheckbox v-model="state.multiple" title="Multiple" />

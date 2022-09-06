@@ -31,7 +31,6 @@ const toggleMenu = (val?: boolean) => {
 
 const selectEl = ref(null);
 onClickOutside(selectEl, () => {
-  console.log(props.multiple, isOutside.value);
   if (!props.multiple || isOutside.value) {
     isOpen.value = false;
   }

@@ -6,6 +6,10 @@ import EcosystemIcon from "./icons/IconEcosystem.vue";
 import CommunityIcon from "./icons/IconCommunity.vue";
 import SupportIcon from "./icons/IconSupport.vue";
 import CcSelect from "./CcSelect.vue";
+import { ref } from "vue";
+
+const names = ref(["Tom", "Jane", "Peter", "Mary", "Jordan", "Polly", "Amanda", "Billy"]);
+const name = ref("");
 </script>
 
 <template>
@@ -92,7 +96,8 @@ import CcSelect from "./CcSelect.vue";
     .
   </WelcomeItem>
 
-  <CcSelect :options="['Tom', 'Peter', 'Mary']" />
+  <div>{{ name }}</div>
+  <CcSelect v-model="name" :options="names" />
 
   <WelcomeItem>
     <template #icon>

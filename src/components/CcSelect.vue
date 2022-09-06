@@ -1,15 +1,26 @@
 <script setup lang="ts">
-import { ref } from "vue";
-import { onClickOutside, useElementBounding } from "@vueuse/core";
+import { computed, ref } from "vue";
+import { onClickOutside, useElementBounding, useTemplateRefsList } from "@vueuse/core";
 import CcIcon from "./CcIcon.vue";
-import { computed } from "vue";
 
+interface Props {
+  modelValue: string | undefined;
+  options: string[];
+}
+const props = defineProps<Props>();
+const emit = defineEmits<{
+  (e: "update:modelValue", v: string | undefined): void;
+}>();
 const inputValue = ref("");
 const isOpen = ref(false);
+const toggleMenu = (val?: boolean) => {
+  isOpen.value = val === undefined ? !isOpen.value : val;
+  if (isOpen.value) update();
+};
 
 const selectEl = ref(null);
 onClickOutside(selectEl, () => (isOpen.value = false));
-const { top, left, height, width } = useElementBounding(selectEl);
+const { top, left, height, width, update } = useElementBounding(selectEl);
 const optionsPos = computed(() => {
   const body = document.body.getBoundingClientRect();
   return {
@@ -19,8 +30,15 @@ const optionsPos = computed(() => {
   };
 });
 
-const toggleMenu = (val?: boolean) => {
-  isOpen.value = val === undefined ? !isOpen.value : val;
+const optionEls = useTemplateRefsList<HTMLDivElement>();
+const optionClasses = (val: string) => {
+  return {
+    "cc-option--selected": props.modelValue === val,
+  };
+};
+const selectOption = (val: string) => {
+  inputValue.value = val;
+  emit("update:modelValue", val);
 };
 </script>
 
@@ -34,14 +52,16 @@ const toggleMenu = (val?: boolean) => {
     </div>
     <teleport to="body">
       <ul v-if="isOpen" class="cc-option" :style="optionsPos">
-        <li>Tom</li>
-        <li>Jane</li>
-        <li>Peter</li>
-        <li>Mary</li>
-        <li>Jordan</li>
-        <li>Polly</li>
-        <li>Amanda</li>
-        <li>Billy</li>
+        <li
+          v-for="option in props.options"
+          :key="option"
+          :ref="optionEls.set"
+          class="cc-option__item"
+          :class="optionClasses(option)"
+          @click="selectOption(option)"
+        >
+          {{ option }}
+        </li>
       </ul>
     </teleport>
   </div>
@@ -88,5 +108,21 @@ const toggleMenu = (val?: boolean) => {
   border-radius: $border-radius-sm;
 
   background-color: #fff;
+
+  &__item {
+    &:hover {
+      background-color: color(blue-200);
+    }
+  }
+
+  &--selected {
+    color: #fff;
+
+    background-color: color(blue-400);
+
+    &:hover {
+      background-color: color(blue-600);
+    }
+  }
 }
 </style>

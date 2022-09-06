@@ -1,15 +1,18 @@
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { computed, ref, watch } from "vue";
 import { onClickOutside, useElementBounding, useMouseInElement, useTemplateRefsList } from "@vueuse/core";
 import CcIcon from "./CcIcon.vue";
 
-type SelectValueType = string | string[] | undefined;
+type SelectOptionType = string | Record<string, unknown>;
+
+type SelectValueType = SelectOptionType | SelectOptionType[] | undefined;
 
 interface Props {
   modelValue?: SelectValueType;
-  options: string[];
+  options: SelectOptionType[];
   allowEmpty?: boolean;
   multiple?: boolean;
+  label?: string | ((option: Record<string, unknown>) => string);
 }
 const props = withDefaults(defineProps<Props>(), {
   allowEmpty: false,
@@ -46,24 +49,52 @@ const optionsPos = computed(() => {
 const optionEl = ref(null);
 const { isOutside } = useMouseInElement(optionEl);
 const optionEls = useTemplateRefsList<HTMLDivElement>();
-const optionClasses = (val: string) => {
+
+const getLabelFn = computed(() => {
+  if (props.label !== undefined) {
+    if (typeof props.label === "function") {
+      return props.label;
+    } else {
+      const key = props.label;
+      return (option: Record<string, unknown>) => option[key] as string;
+    }
+  }
+  return () => "label property undefined for options object array";
+});
+
+const getLabel = (option: SelectOptionType) => {
+  return typeof option === "string" ? option : getLabelFn.value(option);
+};
+
+const optionClasses = (option: SelectOptionType) => {
   return {
     "cc-option--selected":
-      props.multiple && Array.isArray(props.modelValue) ? props.modelValue.includes(val) : props.modelValue === val,
+      props.multiple && Array.isArray(props.modelValue)
+        ? props.modelValue.includes(option)
+        : props.modelValue === option,
   };
 };
-const selectOption = (val: string) => {
+const selectOption = (option: SelectOptionType) => {
   if (props.multiple) {
     const model =
       props.modelValue === undefined ? [] : Array.isArray(props.modelValue) ? props.modelValue : [props.modelValue];
-    const items = model.includes(val) ? model.filter((x) => x !== val) : [...model, val];
-    emit("update:modelValue", items);
+    const items = model.includes(option) ? model.filter((x) => x !== option) : [...model, option];
+    if (props.allowEmpty || items.length > 0) {
+      emit("update:modelValue", items);
+    }
   } else {
-    const selected = props.allowEmpty && val === props.modelValue ? undefined : val;
+    const selected = props.allowEmpty && option === props.modelValue ? undefined : option;
     inputValue.value = selected;
     emit("update:modelValue", selected);
   }
 };
+
+// if 'multiple' prop is changed, the the modelValue must be reset to undefined,
+// because the current value would be invalid since it can only be an array or a single value.
+watch(
+  () => props.multiple,
+  () => emit("update:modelValue", undefined)
+);
 </script>
 
 <template>
@@ -78,13 +109,13 @@ const selectOption = (val: string) => {
       <ul v-if="isOpen" ref="optionEl" class="cc-option" :style="optionsPos">
         <li
           v-for="option in props.options"
-          :key="option"
+          :key="getLabel(option)"
           :ref="optionEls.set"
           class="cc-option__item"
           :class="optionClasses(option)"
           @click="selectOption(option)"
         >
-          {{ option }}
+          {{ getLabel(option) }}
         </li>
       </ul>
     </teleport>

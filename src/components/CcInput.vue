@@ -6,7 +6,7 @@ export default {
 
 <script setup lang="ts">
 import { computed, inject } from "vue";
-import type { IconKind } from "@/types";
+import type { IconName } from "@/types";
 import { FieldKey } from "@/utils/provider-keys";
 import CcIcon from "@/components/CcIcon.vue";
 
@@ -15,7 +15,7 @@ interface Props {
   modelValue?: string | number;
   type?: string;
   modelModifiers?: { lazy: boolean };
-  icon?: IconKind;
+  icon?: IconName;
   isLoading?: boolean;
   hasError?: boolean;
   readonly?: boolean;

@@ -2,12 +2,12 @@
 import { reactive, ref } from "vue";
 import { buttonKind } from "@/utils/prop-types";
 import CcButton from "./CcButton.vue";
-import type { ButtonKind, IconKind } from "@/types";
+import type { ButtonKind, IconName } from "@/types";
 
 const state = reactive({
   label: "Click me",
-  icon: "" as IconKind,
-  iconRight: "" as IconKind,
+  icon: "" as IconName,
+  iconRight: "" as IconName,
   disabled: false,
   loading: false,
 });

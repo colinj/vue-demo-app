@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import { reactive, ref, watch } from "vue";
-import type { ColorKind, IconKind } from "@/types";
+import type { ColorKind, IconKind, IconName } from "@/types";
 import { colorNames, colorShades } from "@/utils/prop-types";
+import { iconKind } from "@/utils/icon-names";
 import CcIcon from "./CcIcon.vue";
 
 const state = reactive({
-  name: "house" as IconKind,
+  name: "house" as IconName,
+  kind: "solid" as IconKind,
   size: "5em",
 });
 
@@ -21,10 +23,11 @@ watch(
 
 <template>
   <Story title="CcIcon">
-    <CcIcon :name="state.name" :color="color" :size="state.size"></CcIcon>
+    <CcIcon :name="state.name" :color="color" :size="state.size" :kind="state.kind"></CcIcon>
 
     <template #controls>
       <HstText v-model="state.name" title="Icon" />
+      <HstSelect v-model="state.kind" :options="iconKind" title="Icon style" />
       <HstSelect v-model="colorName" :options="colorNames" title="Color" />
       <HstSelect v-model="colorShade" :options="colorShades" title="Shade" />
       <HstText v-model="state.size" title="Size" />

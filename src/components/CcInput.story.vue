@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import type { IconKind } from "@/types";
+import type { IconName } from "@/types";
 import { reactive, ref } from "vue";
 import CcField from "./CcField.vue";
 import CcInput from "./CcInput.vue";
 
 const state = reactive({
   error: false,
-  icon: "" as IconKind,
+  icon: "" as IconName,
 });
 
 const message = ref("");

@@ -1,14 +1,14 @@
 <script setup lang="ts">
 import { computed } from "vue";
-import type { ButtonKind, IconKind } from "@/types";
+import type { ButtonKind, IconName } from "@/types";
 import type { RouteLocationRaw } from "vue-router";
 import CcIcon from "./CcIcon.vue";
 
 interface Props {
   kind?: ButtonKind;
   label?: string;
-  icon?: IconKind;
-  iconRight?: IconKind;
+  icon?: IconName;
+  iconRight?: IconName;
   to?: RouteLocationRaw;
   href?: string;
   disabled?: boolean;

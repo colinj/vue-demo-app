@@ -1,3 +1,5 @@
+export const iconKind = ["regular", "solid"] as const;
+
 export const iconNames = [
   "0",
   "1",

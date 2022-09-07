@@ -17,3 +17,10 @@ export interface FieldProps {
   hasError?: Ref<boolean>;
   readonly?: Ref<boolean>;
 }
+
+export interface TabProps<T = unknown> {
+  id: string;
+  caption: string;
+  icon?: IconKind;
+  data?: T;
+}

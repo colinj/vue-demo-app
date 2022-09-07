@@ -1,5 +1,5 @@
 <script lang="ts">
-import CcSelectNonGeneric from "./CcSelectNonGeneric.vue";
+import CcSelectBase from "./CcSelectBase.vue";
 
 type SelectOptionType<T extends Record<string, unknown>> = string | T;
 
@@ -20,5 +20,5 @@ type CcSelect = new <T extends Record<string, unknown>>(props: Props<T>) => {
   $props: Props<T>;
 };
 
-export default CcSelectNonGeneric as CcSelect;
+export default CcSelectBase as CcSelect;
 </script>

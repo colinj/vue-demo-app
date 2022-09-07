@@ -1,0 +1,169 @@
+:root {
+  --border-radius: #{$border-radius-md};
+  --accordion-bg: transparent;
+  --accordion-bg-content: transparent;
+  --accordion-border: #{color(grey-200)};
+  --accordion-border-top: #{color(grey-200)};
+  --accordion-border-mid: #{color(grey-200)};
+  --accordion-border-bot: #{color(grey-200)};
+  --accordion-radius-top: var(--border-radius);
+  --accordion-radius-bot: var(--border-radius);
+}
+
+%hover-toggle {
+  &:hover {
+    .icon-normal {
+      display: none;
+    }
+
+    .icon-hover {
+      display: block;
+    }
+  }
+}
+
+.icon-hover {
+  display: none;
+}
+
+.cc-accordion {
+  border-radius: var(--accordion-radius-top) var(--accordion-radius-top) var(--accordion-radius-bot) var(--accordion-radius-bot);
+
+  background-color: var(--accordion-bg);
+
+  box-shadow: inset 0 -1px 0 0 var(--accordion-border-mid), inset 1px 0 0 0 var(--accordion-border), inset -1px 0 0 0 var(--accordion-border), inset 0 1px 0 0 var(--accordion-border-top);
+
+  &__toggle {
+    @extend %hover-toggle;
+    display: flex;
+    align-self: stretch;
+
+    padding-top: 16px;
+
+    svg {
+      transition: transform 0.2s linear;
+    }
+  }
+
+  &__header {
+    display: flex;
+    align-items: center;
+
+    min-height: 48px;
+
+    border-radius: var(--accordion-radius-top) var(--accordion-radius-top) var(--accordion-radius-bot) var(--accordion-radius-bot);
+
+    cursor: pointer;
+
+    overflow: hidden;
+  }
+
+  &__header-content {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+
+    width: 100%;
+    min-width: 0;
+  }
+
+  &__content {
+    height: 0;
+
+    border-radius: 0 0 var(--accordion-radius-bot) var(--accordion-radius-bot);
+
+    background-color: var(--accordion-bg-content);
+
+    overflow: hidden;
+
+    transition: height 0.2s ease-out;
+  }
+
+  &__inner-content {
+    padding: 12px 20px;
+  }
+
+  &--separator &__content {
+    box-shadow: inset 0 1px 0 0 var(--accordion-border-mid);
+  }
+
+  & + &:not(&--connected) {
+    margin-top: 8px;
+  }
+
+  &--toggle {
+    .cc-accordion__header {
+      cursor: default;
+    }
+
+    .cc-accordion__toggle {
+      cursor: pointer;
+    }
+  }
+
+  &--header {
+    @extend %hover-toggle;
+  }
+
+  &--connected {
+    --accordion-radius-top: 0;
+    --accordion-radius-bot: 0;
+
+    &:first-of-type {
+      --accordion-radius-top: #{$border-radius-md};
+    }
+
+    &:last-of-type {
+      --accordion-radius-bot: #{$border-radius-md};
+    }
+
+    &:not(:first-of-type) {
+      --accordion-border-top: transparent;
+    }
+  }
+
+  &--allow-hover {
+    .cc-accordion__header {
+      &:hover {
+        background-color: color(grey-100);
+      }
+    }
+  }
+
+  &--press-down {
+    .cc-accordion__header.cc-accordion__header {
+      background-color: color(grey-200);
+    }
+  }
+
+  &--open {
+    .cc-accordion__toggle {
+      svg {
+        transform: rotate(180deg);
+      }
+    }
+  }
+
+  &--active {
+    --accordion-bg: #{color(green-100)};
+    --accordion-bg-content: #f9fefd;
+    --accordion-border: #{color(persian-green)};
+    --accordion-border-top: #{color(persian-green)};
+    --accordion-border-mid: #{color(persian-green)};
+    --accordion-border-bot: #{color(persian-green)};
+
+    &.cc-accordion--connected {
+      --accordion-border-top: #{color(persian-green)};
+      --accordion-border-mid: #{color(persian-green)};
+      --accordion-border-bot: #{color(persian-green)};
+
+      & + .cc-accordion {
+        --accordion-border-top: transparent;
+      }
+    }
+  }
+
+  @media (max-width: 640px) {
+    box-shadow: inset 0 -1px 0 0 #e5e7eb, inset 0 1px 0 0 #e5e7eb;
+  }
+}

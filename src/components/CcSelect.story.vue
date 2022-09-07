@@ -70,6 +70,21 @@ const state = reactive({
       <div>{{ name1 }}</div>
     </Variant>
 
+    <Variant title="Multi-Select (Show tags) - Options string array">
+      <div class="playground">
+        <CcSelect
+          v-model="name1"
+          :options="names"
+          multiple
+          show-tags
+          :allow-empty="state.allowEmpty"
+          :searchable="state.searchable"
+          :disabled="state.disabled"
+        />
+      </div>
+      <div>{{ name1 }}</div>
+    </Variant>
+
     <Variant title="Options object array">
       <div class="playground">
         <CcSelect

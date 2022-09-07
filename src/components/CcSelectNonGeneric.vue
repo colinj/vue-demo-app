@@ -3,6 +3,7 @@ import { computed, ref } from "vue";
 import { onClickOutside, useElementBounding, useMouseInElement, useTemplateRefsList } from "@vueuse/core";
 import { pluralise } from "@/utils/pluralise";
 import CcIcon from "./CcIcon.vue";
+import CcPill from "./CcPill.vue";
 
 type SelectOptionType = string | Record<string, unknown>;
 
@@ -11,16 +12,18 @@ type SelectValueType = SelectOptionType | SelectOptionType[] | undefined;
 interface Props {
   modelValue?: SelectValueType;
   options: SelectOptionType[];
+  placeholder?: string;
   label?: string | ((option: Record<string, unknown>) => string);
   allowEmpty?: boolean;
   multiple?: boolean;
   searchable?: boolean;
-  placeholder?: string;
+  showTags?: boolean;
 }
 const props = withDefaults(defineProps<Props>(), {
   allowEmpty: false,
   multiple: false,
   searchable: false,
+  showTags: false,
 });
 const emit = defineEmits<{
   (e: "update:modelValue", v: SelectValueType): void;
@@ -103,7 +106,17 @@ const selectOption = (option: SelectOptionType) => {
         <span v-if="!Array.isArray(props.modelValue)">
           {{ getLabel(props.modelValue) }}
         </span>
-        <span v-else>{{ pluralise(props.modelValue.length, "option") }} selected</span>
+        <span v-else-if="!props.showTags">{{ pluralise(props.modelValue.length, "option") }} selected</span>
+        <template v-else>
+          <CcPill
+            v-for="option in props.modelValue"
+            :key="getLabel(option)"
+            size="sm"
+            :label="getLabel(option)"
+            close
+            @close="selectOption(option)"
+          />
+        </template>
       </div>
       <button class="cc-select__toggle" @click="toggleMenu()">
         <CcIcon name="chevron-down" />
@@ -152,6 +165,8 @@ const selectOption = (option: SelectOptionType) => {
 
   &__tags {
     display: flex;
+    flex-flow: row wrap;
+    gap: 4px;
     align-items: center;
 
     width: 100%;

@@ -1,0 +1,28 @@
+@use "sass:string";
+
+$index: (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 14, 15, 16, 18, 20);
+$prop-types: margin padding;
+$kinds: (
+  "": "",
+  y: top bottom,
+  x: left right,
+  t: top,
+  b: bottom,
+  l: left,
+  r: right,
+);
+
+@each $kind, $props in $kinds {
+  @each $i in $index {
+    @each $type in $prop-types {
+      $t: string.slice($type, 0, 1);
+      .#{$t}#{$kind}-#{$i} {
+        @each $p in $props {
+          $sep: if($p == "", "", "-");
+
+          #{$type}#{$sep}#{$p}: #{4 * $i}#{if($i == 0, "", "px")} !important;
+        }
+      }
+    }
+  }
+}

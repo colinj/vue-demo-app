@@ -15,6 +15,7 @@ interface Props {
   allowEmpty?: boolean;
   multiple?: boolean;
   searchable?: boolean;
+  placeholder?: string;
 }
 const props = withDefaults(defineProps<Props>(), {
   allowEmpty: false,
@@ -96,6 +97,9 @@ const selectOption = (option: SelectOptionType) => {
     <div ref="selectEl" class="cc-select" :class="{ 'cc-select--open': isOpen }">
       <input v-if="props.searchable" class="cc-select__input" v-model="inputValue" />
       <div v-else class="cc-select__tags" @click="toggleMenu()">
+        <span v-if="props.placeholder && !props.modelValue" class="cc-select__placeholder">
+          {{ props.placeholder }}
+        </span>
         <span v-if="!Array.isArray(props.modelValue)">
           {{ getLabel(props.modelValue) }}
         </span>
@@ -107,16 +111,21 @@ const selectOption = (option: SelectOptionType) => {
     </div>
     <teleport to="body">
       <ul v-if="isOpen" ref="optionEl" class="cc-option" :style="optionsPos">
-        <li
-          v-for="option in props.options"
-          :key="getLabel(option)"
-          :ref="optionEls.set"
-          class="cc-option__item"
-          :class="optionClasses(option)"
-          @click="selectOption(option)"
-        >
-          {{ getLabel(option) }}
+        <li v-if="props.options.length === 0" class="cc-option__empty">
+          <slot name="noOptions"><em>List is empty</em></slot>
         </li>
+        <template v-else>
+          <li
+            v-for="option in props.options"
+            :key="getLabel(option)"
+            :ref="optionEls.set"
+            class="cc-option__item"
+            :class="optionClasses(option)"
+            @click="selectOption(option)"
+          >
+            {{ getLabel(option) }}
+          </li>
+        </template>
       </ul>
     </teleport>
   </div>
@@ -129,6 +138,10 @@ const selectOption = (option: SelectOptionType) => {
 
   border: 1px solid black;
   border-radius: $border-radius-sm;
+
+  &__placeholder {
+    color: color(grey-400);
+  }
 
   &__input {
     width: 100%;
@@ -171,6 +184,12 @@ const selectOption = (option: SelectOptionType) => {
   }
 }
 
+%cc-option-item {
+  padding: 0 8px;
+
+  line-height: 2;
+}
+
 .cc-option {
   position: absolute;
 
@@ -181,10 +200,15 @@ const selectOption = (option: SelectOptionType) => {
 
   background-color: #fff;
 
-  &__item {
-    padding: 0 8px;
+  &__empty {
+    @extend %cc-option-item;
+    color: color(grey-400);
 
-    line-height: 2;
+    cursor: default;
+  }
+
+  &__item {
+    @extend %cc-option-item;
 
     &:hover {
       background-color: color(blue-200);

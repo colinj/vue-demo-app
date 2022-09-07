@@ -22,11 +22,26 @@ const state = reactive({
   disabled: false,
   allowEmpty: false,
   searchable: false,
+  placeholder: "Please select an option",
 });
 </script>
 
 <template>
   <Story title="CcSelect">
+    <Variant title="No options (empty list)">
+      <div class="playground">
+        <CcSelect v-model="name1" :options="[]" placeholder="Please choose an option" />
+      </div>
+    </Variant>
+
+    <Variant title="no-options slot: No options (empty list)">
+      <div class="playground">
+        <CcSelect v-model="name1" :options="[]" placeholder="Please select an option">
+          <template #noOptions><em>Hey! You have no options available!</em></template>
+        </CcSelect>
+      </div>
+    </Variant>
+
     <Variant title="Single-Select - Options string array">
       <div class="playground">
         <CcSelect
@@ -35,6 +50,7 @@ const state = reactive({
           :allow-empty="state.allowEmpty"
           :searchable="state.searchable"
           :disabled="state.disabled"
+          :placeholder="state.placeholder"
         />
       </div>
       <div>{{ name1 }}</div>
@@ -81,6 +97,7 @@ const state = reactive({
     </Variant>
 
     <template #controls>
+      <HstText v-model="state.placeholder" title="Placeholder" />
       <HstCheckbox v-model="state.allowEmpty" title="Allow empty" />
       <HstCheckbox v-model="state.searchable" title="Searchable" />
       <HstCheckbox v-model="state.disabled" title="Disabled" />

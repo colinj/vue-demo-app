@@ -12,6 +12,7 @@ interface Props<T extends Record<string, unknown>> {
   allowEmpty?: boolean;
   multiple?: boolean;
   searchable?: boolean;
+  placeholder?: string;
 }
 
 type CcSelect = new <T extends Record<string, unknown>>(props: Props<T>) => {

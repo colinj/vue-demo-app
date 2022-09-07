@@ -33,7 +33,7 @@ const pillColors = computed(() => ({
 <template>
   <div class="cc-pill" :class="pillClasses" :style="pillColors">
     <slot>{{ props.label }}</slot>
-    <button v-if="props.close" type="button" class="cc-pill__button" tabindex="-1" @click="closeChip">
+    <button v-if="props.close" type="button" class="cc-pill__button" tabindex="-1" @click.stop="closeChip">
       <CcIcon name="xmark" size="1.1em" />
     </button>
   </div>

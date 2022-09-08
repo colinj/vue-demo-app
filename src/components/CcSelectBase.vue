@@ -55,6 +55,7 @@ const optionsPos = computed(() => {
 const optionEl = ref(null);
 const { isOutside } = useMouseInElement(optionEl);
 const optionEls = useTemplateRefsList<HTMLDivElement>();
+const highlighted = ref<number>();
 
 const getLabelFn = computed(() => {
   if (props.label !== undefined) {
@@ -71,12 +72,13 @@ const getLabelFn = computed(() => {
 const getLabel = (option: SelectOptionType | undefined) =>
   option === undefined || typeof option === "string" ? option : getLabelFn.value(option);
 
-const optionClasses = (option: SelectOptionType) => {
+const optionClasses = (option: SelectOptionType, index: number) => {
   return {
     "cc-option--selected":
       props.multiple && Array.isArray(props.modelValue)
         ? props.modelValue.includes(option)
         : props.modelValue === option,
+    "cc-option--highlighted": index === highlighted.value,
   };
 };
 const selectOption = (option: SelectOptionType) => {
@@ -93,12 +95,15 @@ const selectOption = (option: SelectOptionType) => {
     emit("update:modelValue", selected);
   }
 };
+const highlightOption = (index?: number) => {
+  highlighted.value = index;
+};
 </script>
 
 <template>
   <div>
     <div ref="selectEl" class="cc-select" :class="{ 'cc-select--open': isOpen }">
-      <input v-if="props.searchable" class="cc-select__input" v-model="inputValue" />
+      <input v-if="props.searchable" class="cc-select__input" v-model="inputValue" @focus="toggleMenu(true)" />
       <div v-else class="cc-select__tags" @click="toggleMenu()">
         <span v-if="props.placeholder && !props.modelValue" class="cc-select__placeholder">
           {{ props.placeholder }}
@@ -123,18 +128,19 @@ const selectOption = (option: SelectOptionType) => {
       </button>
     </div>
     <teleport to="body">
-      <ul v-if="isOpen" ref="optionEl" class="cc-option" :style="optionsPos">
+      <ul v-if="isOpen" ref="optionEl" class="cc-option" :style="optionsPos" @mouseleave="highlightOption()">
         <li v-if="props.options.length === 0" class="cc-option__empty">
           <slot name="noOptions"><em>List is empty</em></slot>
         </li>
         <template v-else>
           <li
-            v-for="option in props.options"
+            v-for="(option, index) in props.options"
             :key="getLabel(option)"
             :ref="optionEls.set"
             class="cc-option__item"
-            :class="optionClasses(option)"
+            :class="optionClasses(option, index)"
             @click="selectOption(option)"
+            @mouseenter="highlightOption(index)"
           >
             {{ getLabel(option) }}
           </li>
@@ -224,18 +230,18 @@ const selectOption = (option: SelectOptionType) => {
 
   &__item {
     @extend %cc-option-item;
-
-    &:hover {
-      background-color: color(blue-200);
-    }
   }
 
   &--selected {
     color: #fff;
 
     background-color: color(blue-400);
+  }
 
-    &:hover {
+  &--highlighted {
+    background-color: color(blue-200);
+
+    &.cc-option--selected {
       background-color: color(blue-600);
     }
   }

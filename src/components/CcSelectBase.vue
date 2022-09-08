@@ -30,8 +30,10 @@ const emit = defineEmits<{
 
 const isMultiple = computed(() => Array.isArray(props.modelValue));
 const inputValue = ref();
+const inputRef = ref<HTMLInputElement | null>(null);
+
 const isOpen = ref(false);
-const toggleMenu = (val?: boolean) => {
+const toggleMenu = (val?: boolean, keepFocusInInput = false) => {
   isOpen.value = val === undefined ? !isOpen.value : val;
   if (isOpen.value) {
     update();
@@ -39,13 +41,14 @@ const toggleMenu = (val?: boolean) => {
     const key = getKey(highlightedOption);
     const index = props.options.findIndex((x) => getKey(x) === key);
     highlightOption(index < 0 ? 0 : index);
-
-    nextTick(() => {
-      optionEl.value?.focus();
-    });
+    if (!keepFocusInInput) {
+      nextTick(() => {
+        optionEl.value?.focus();
+      });
+    }
   } else {
     nextTick(() => {
-      selectEl.value?.focus();
+      props.searchable ? inputRef.value?.focus() : selectEl.value?.focus();
     });
   }
 };
@@ -118,6 +121,7 @@ const selectOption = (option: SelectOptionType, closeMenu = false) => {
     toggleMenu(false);
   }
 };
+
 const highlightOption = (index: number) => {
   highlighted.value = index;
 };
@@ -137,28 +141,47 @@ const highlightPrev = () => {
       class="cc-select"
       :class="{ 'cc-select--open': isOpen }"
       tabindex="0"
-      @keydown.space="toggleMenu()"
-      @keydown.enter="toggleMenu()"
+      @keydown.space="!props.searchable && toggleMenu()"
+      @keydown.enter="!props.searchable && toggleMenu()"
     >
-      <input v-if="props.searchable" class="cc-select__input" v-model="inputValue" @focus="toggleMenu(true)" />
-      <div v-else class="cc-select__tags" @click="toggleMenu()">
-        <span v-if="props.placeholder && !props.modelValue" class="cc-select__placeholder">
-          {{ props.placeholder }}
-        </span>
-        <span v-if="!Array.isArray(props.modelValue)">
-          {{ getLabel(props.modelValue) }}
-        </span>
-        <span v-else-if="!props.showTags">{{ pluralise(props.modelValue.length, "option") }} selected</span>
-        <template v-else>
-          <CcPill
-            v-for="option in props.modelValue"
-            :key="(getKey(option) as string | number | undefined)"
-            size="sm"
-            :label="getLabel(option)"
-            :close="props.allowEmpty || props.modelValue.length > 1"
-            @close="selectOption(option)"
-          />
-        </template>
+      <div class="cc-select__container">
+        <div class="cc-select__tags" @click="toggleMenu()">
+          <template v-if="Array.isArray(props.modelValue)">
+            <template v-if="props.showTags">
+              <CcPill
+                v-for="option in props.modelValue"
+                :key="(getKey(option) as string | number | undefined)"
+                size="sm"
+                :label="getLabel(option)"
+                :close="props.allowEmpty || props.modelValue.length > 1"
+                @close="selectOption(option)"
+              />
+            </template>
+            <span v-else>
+              {{ pluralise(props.modelValue.length, "option") + " selected" }}
+            </span>
+          </template>
+          <template v-else-if="!props.searchable">
+            <span v-if="props.placeholder && !props.modelValue" class="cc-select__placeholder">
+              {{ props.placeholder }}
+            </span>
+            <span v-else>
+              {{ getLabel(props.modelValue) }}
+            </span>
+          </template>
+        </div>
+        <input
+          v-if="props.searchable"
+          class="cc-select__input"
+          ref="inputRef"
+          v-model="inputValue"
+          @focus="toggleMenu(true, true)"
+          @keydown.up.prevent="highlightPrev()"
+          @keydown.down.prevent="highlightNext()"
+          @keydown.enter.prevent="
+            isOpen ? selectOption(props.options[highlighted], !isMultiple) : toggleMenu(true, true)
+          "
+        />
       </div>
       <button class="cc-select__toggle" tabindex="-1" @click="toggleMenu()">
         <CcIcon name="chevron-down" />
@@ -208,19 +231,30 @@ const highlightPrev = () => {
   border: 1px solid black;
   border-radius: $border-radius-sm;
 
+  &__container {
+    display: flex;
+    flex-flow: row wrap;
+
+    width: 100%;
+  }
+
   &__placeholder {
     color: color(grey-400);
   }
 
   &__input {
-    width: 100%;
-    margin: 4px 0 4px 8px;
+    flex-basis: 100%;
 
-    border: 0;
+    width: 100%;
+    padding: 4px 0 4px 8px;
+
+    border: 1px solid transparent;
+    border-radius: $border-radius-sm;
   }
 
   &__tags {
     display: flex;
+    flex-basis: 100%;
     flex-flow: row wrap;
     gap: 4px;
     align-items: center;
@@ -228,11 +262,16 @@ const highlightPrev = () => {
     width: 100%;
     min-height: 26px;
     margin: 4px 0 4px 10px;
+
+    &:empty {
+      display: none;
+    }
   }
 
   &__toggle {
     display: grid;
     place-content: center;
+    align-self: stretch;
 
     padding: 8px;
 

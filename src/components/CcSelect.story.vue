@@ -19,10 +19,11 @@ const people = ref([
 const name1 = ref<string>();
 const name2 = ref<People[]>([]);
 const state = reactive({
+  placeholder: "Please select an option",
   disabled: false,
   allowEmpty: false,
   searchable: false,
-  placeholder: "Please select an option",
+  showTags: false,
 });
 </script>
 
@@ -49,6 +50,7 @@ const state = reactive({
           :options="names"
           :allow-empty="state.allowEmpty"
           :searchable="state.searchable"
+          :show-tags="state.showTags"
           :disabled="state.disabled"
           :placeholder="state.placeholder"
         />
@@ -64,6 +66,7 @@ const state = reactive({
           multiple
           :allow-empty="state.allowEmpty"
           :searchable="state.searchable"
+          :show-tags="state.showTags"
           :disabled="state.disabled"
         />
       </div>
@@ -115,6 +118,7 @@ const state = reactive({
       <HstText v-model="state.placeholder" title="Placeholder" />
       <HstCheckbox v-model="state.allowEmpty" title="Allow empty" />
       <HstCheckbox v-model="state.searchable" title="Searchable" />
+      <HstCheckbox v-model="state.showTags" title="Show tags" />
       <HstCheckbox v-model="state.disabled" title="Disabled" />
     </template>
   </Story>

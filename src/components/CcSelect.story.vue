@@ -16,8 +16,9 @@ const people = ref([
   { name: "Mary", age: 26, pet: "Doggo" },
   { name: "Jordan", age: 37 },
 ]);
-const name1 = ref<string>();
-const name2 = ref<People[]>([]);
+const name = ref<string>();
+const nameStringArray = ref<string[]>([]);
+const nameObjectArray = ref<People[]>([]);
 const state = reactive({
   placeholder: "Please select an option",
   disabled: false,
@@ -31,13 +32,13 @@ const state = reactive({
   <Story title="CcSelect">
     <Variant title="No options (empty list)">
       <div class="playground">
-        <CcSelect v-model="name1" :options="[]" placeholder="Please choose an option" />
+        <CcSelect v-model="name" :options="[]" placeholder="Please choose an option" />
       </div>
     </Variant>
 
     <Variant title="no-options slot: No options (empty list)">
       <div class="playground">
-        <CcSelect v-model="name1" :options="[]" placeholder="Please select an option">
+        <CcSelect v-model="name" :options="[]" placeholder="Please select an option">
           <template #noOptions><em>Hey! You have no options available!</em></template>
         </CcSelect>
       </div>
@@ -46,7 +47,7 @@ const state = reactive({
     <Variant title="Single-Select - Options string array">
       <div class="playground">
         <CcSelect
-          v-model="name1"
+          v-model="name"
           :options="names"
           :allow-empty="state.allowEmpty"
           :searchable="state.searchable"
@@ -55,78 +56,75 @@ const state = reactive({
           :placeholder="state.placeholder"
         />
       </div>
-      <div>{{ name1 }}</div>
+      <div>{{ name }}</div>
     </Variant>
 
     <Variant title="Multi-Select - Options string array">
       <div class="playground">
         <CcSelect
-          v-model="name1"
+          v-model="nameStringArray"
           :options="names"
-          multiple
           :allow-empty="state.allowEmpty"
           :searchable="state.searchable"
           :show-tags="state.showTags"
           :disabled="state.disabled"
         />
       </div>
-      <div>{{ name1 }}</div>
+      <div>{{ nameStringArray }}</div>
     </Variant>
 
     <Variant title="Multi-Select (Show tags) - Options string array">
       <div class="playground">
         <CcSelect
-          v-model="name1"
+          v-model="nameStringArray"
           :options="names"
-          multiple
           show-tags
           :allow-empty="state.allowEmpty"
           :searchable="state.searchable"
           :disabled="state.disabled"
         />
       </div>
-      <div>{{ name1 }}</div>
+      <div>{{ nameStringArray }}</div>
     </Variant>
 
     <Variant title="Options object array - Single Select">
       <div class="playground">
         <CcSelect
-          v-model="name2"
+          v-model="name"
           :options="people"
           label="name"
           :allow-empty="state.allowEmpty"
           :disabled="state.disabled"
         />
       </div>
-      <div>{{ name2 }}</div>
+      <div>{{ name }}</div>
     </Variant>
 
     <Variant title="Options object array - Multi Select">
       <div class="playground">
         <CcSelect
-          v-model="name2"
+          v-model="nameObjectArray"
           :options="people"
           option-key="name"
           label="name"
-          multiple
           :allow-empty="state.allowEmpty"
           :disabled="state.disabled"
         />
       </div>
-      <div>{{ name2 }}</div>
+      <div>{{ nameObjectArray }}</div>
     </Variant>
 
-    <Variant title="Options object array with label function">
+    <Variant title="Options object array with label function (single select)">
       <div class="playground">
         <CcSelect
-          v-model="name2"
+          v-model="name"
           :options="people"
           :label="(val) => `${val.name} is awesome!`"
           :allow-empty="state.allowEmpty"
           :disabled="state.disabled"
         />
       </div>
-      <div>{{ name2 }}</div>
+      <div>{{ name }}</div>
     </Variant>
 
     <template #controls>

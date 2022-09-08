@@ -7,11 +7,11 @@ type SelectValueType<T extends Record<string, unknown>> = SelectOptionType<T> | 
 
 interface Props<T extends Record<string, unknown>> {
   modelValue?: SelectValueType<T>;
-  options: SelectOptionType<T>[];
   placeholder?: string;
+  options: SelectOptionType<T>[];
+  optionKey?: string;
   label?: string | ((option: T) => string);
   allowEmpty?: boolean;
-  multiple?: boolean;
   searchable?: boolean;
   showTags?: boolean;
 }

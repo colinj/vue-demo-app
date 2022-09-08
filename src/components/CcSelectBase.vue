@@ -16,13 +16,11 @@ interface Props {
   optionKey?: string;
   label?: string | ((option: Record<string, unknown>) => string);
   allowEmpty?: boolean;
-  multiple?: boolean;
   searchable?: boolean;
   showTags?: boolean;
 }
 const props = withDefaults(defineProps<Props>(), {
   allowEmpty: false,
-  multiple: false,
   searchable: false,
   showTags: false,
 });
@@ -30,6 +28,7 @@ const emit = defineEmits<{
   (e: "update:modelValue", v: SelectValueType): void;
 }>();
 
+const isMultiple = computed(() => Array.isArray(props.modelValue));
 const inputValue = ref();
 const isOpen = ref(false);
 const toggleMenu = (val?: boolean) => {
@@ -41,7 +40,7 @@ const toggleMenu = (val?: boolean) => {
 
 const selectEl = ref(null);
 onClickOutside(selectEl, () => {
-  if (!props.multiple || isOutside.value) {
+  if (!isMultiple.value || isOutside.value) {
     isOpen.value = false;
   }
 });
@@ -84,19 +83,17 @@ const getKey = (option: SelectOptionType | undefined) =>
 const optionClasses = (option: SelectOptionType, index: number) => {
   return {
     "cc-option--selected":
-      props.multiple && Array.isArray(props.modelValue)
+      isMultiple.value && Array.isArray(props.modelValue)
         ? props.modelValue.includes(option)
         : props.modelValue === option,
     "cc-option--highlighted": index === highlighted.value,
   };
 };
 const selectOption = (option: SelectOptionType) => {
-  if (props.multiple) {
-    const model =
-      props.modelValue === undefined ? [] : Array.isArray(props.modelValue) ? props.modelValue : [props.modelValue];
+  if (Array.isArray(props.modelValue)) {
     const key = getKey(option);
-    const foundItem = key && model.find((x) => getKey(x) === key);
-    const items = foundItem ? model.filter((x) => x !== foundItem) : [...model, option];
+    const foundItem = key && props.modelValue.find((x) => getKey(x) === key);
+    const items = foundItem ? props.modelValue.filter((x) => x !== foundItem) : [...props.modelValue, option];
     if (props.allowEmpty || items.length > 0) {
       emit("update:modelValue", items);
     }
@@ -129,7 +126,7 @@ const highlightOption = (index?: number) => {
             :key="(getKey(option) as string | number | undefined)"
             size="sm"
             :label="getLabel(option)"
-            close
+            :close="props.allowEmpty || props.modelValue.length > 1"
             @close="selectOption(option)"
           />
         </template>

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { computed, nextTick, ref } from "vue";
 import { onClickOutside, useElementBounding, useMouseInElement, useTemplateRefsList } from "@vueuse/core";
 import { pluralise } from "@/utils/pluralise";
 import CcIcon from "./CcIcon.vue";
@@ -35,10 +35,22 @@ const toggleMenu = (val?: boolean) => {
   isOpen.value = val === undefined ? !isOpen.value : val;
   if (isOpen.value) {
     update();
+    const highlightedOption = Array.isArray(props.modelValue) ? props.modelValue[0] : props.modelValue;
+    const key = getKey(highlightedOption);
+    const index = props.options.findIndex((x) => getKey(x) === key);
+    highlightOption(index < 0 ? 0 : index);
+
+    nextTick(() => {
+      optionEl.value?.focus();
+    });
+  } else {
+    nextTick(() => {
+      selectEl.value?.focus();
+    });
   }
 };
 
-const selectEl = ref(null);
+const selectEl = ref<HTMLElement | null>(null);
 onClickOutside(selectEl, () => {
   if (!isMultiple.value || isOutside.value) {
     isOpen.value = false;
@@ -54,10 +66,10 @@ const optionsPos = computed(() => {
   };
 });
 
-const optionEl = ref(null);
+const optionEl = ref<HTMLElement | null>(null);
 const { isOutside } = useMouseInElement(optionEl);
 const optionEls = useTemplateRefsList<HTMLDivElement>();
-const highlighted = ref<number>();
+const highlighted = ref(-1);
 
 const getLabelFn = computed(() => {
   if (props.label !== undefined) {
@@ -82,14 +94,13 @@ const getKey = (option: SelectOptionType | undefined) =>
 
 const optionClasses = (option: SelectOptionType, index: number) => {
   return {
-    "cc-option--selected":
-      isMultiple.value && Array.isArray(props.modelValue)
-        ? props.modelValue.includes(option)
-        : props.modelValue === option,
+    "cc-option--selected": Array.isArray(props.modelValue)
+      ? props.modelValue.includes(option)
+      : props.modelValue === option,
     "cc-option--highlighted": index === highlighted.value,
   };
 };
-const selectOption = (option: SelectOptionType) => {
+const selectOption = (option: SelectOptionType, closeMenu = false) => {
   if (Array.isArray(props.modelValue)) {
     const key = getKey(option);
     const foundItem = key && props.modelValue.find((x) => getKey(x) === key);
@@ -102,15 +113,33 @@ const selectOption = (option: SelectOptionType) => {
     inputValue.value = getLabel(selected);
     emit("update:modelValue", selected);
   }
+  if (closeMenu) {
+    console.log("CLOSE MENU");
+    toggleMenu(false);
+  }
 };
-const highlightOption = (index?: number) => {
+const highlightOption = (index: number) => {
   highlighted.value = index;
+};
+const highlightNext = () => {
+  highlighted.value = highlighted.value < props.options.length - 1 ? highlighted.value + 1 : 0;
+};
+
+const highlightPrev = () => {
+  highlighted.value = highlighted.value > 0 ? highlighted.value - 1 : props.options.length - 1;
 };
 </script>
 
 <template>
   <div>
-    <div ref="selectEl" class="cc-select" :class="{ 'cc-select--open': isOpen }">
+    <div
+      ref="selectEl"
+      class="cc-select"
+      :class="{ 'cc-select--open': isOpen }"
+      tabindex="0"
+      @keydown.space="toggleMenu()"
+      @keydown.enter="toggleMenu()"
+    >
       <input v-if="props.searchable" class="cc-select__input" v-model="inputValue" @focus="toggleMenu(true)" />
       <div v-else class="cc-select__tags" @click="toggleMenu()">
         <span v-if="props.placeholder && !props.modelValue" class="cc-select__placeholder">
@@ -131,12 +160,25 @@ const highlightOption = (index?: number) => {
           />
         </template>
       </div>
-      <button class="cc-select__toggle" @click="toggleMenu()">
+      <button class="cc-select__toggle" tabindex="-1" @click="toggleMenu()">
         <CcIcon name="chevron-down" />
       </button>
     </div>
     <teleport to="body">
-      <ul v-if="isOpen" ref="optionEl" class="cc-option" :style="optionsPos" @mouseleave="highlightOption()">
+      <ul
+        v-if="isOpen"
+        ref="optionEl"
+        class="cc-option"
+        :style="optionsPos"
+        tabindex="-1"
+        @mouseleave="highlightOption(-1)"
+        @keydown.up="highlightPrev()"
+        @keydown.down="highlightNext()"
+        @keydown.space="selectOption(props.options[highlighted], !isMultiple)"
+        @keydown.enter="selectOption(props.options[highlighted], !isMultiple)"
+        @keydown.esc="toggleMenu(false)"
+        @keydown.tab="toggleMenu(false)"
+      >
         <li v-if="props.options.length === 0" class="cc-option__empty">
           <slot name="noOptions"><em>List is empty</em></slot>
         </li>
@@ -147,7 +189,7 @@ const highlightOption = (index?: number) => {
             :ref="optionEls.set"
             class="cc-option__item"
             :class="optionClasses(option, index)"
-            @click="selectOption(option)"
+            @click="selectOption(option, !isMultiple)"
             @mouseenter="highlightOption(index)"
           >
             {{ getLabel(option) }}

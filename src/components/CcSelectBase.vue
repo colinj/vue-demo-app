@@ -11,8 +11,9 @@ type SelectValueType = SelectOptionType | SelectOptionType[] | undefined;
 
 interface Props {
   modelValue?: SelectValueType;
-  options: SelectOptionType[];
   placeholder?: string;
+  options: SelectOptionType[];
+  optionKey?: string;
   label?: string | ((option: Record<string, unknown>) => string);
   allowEmpty?: boolean;
   multiple?: boolean;
@@ -33,7 +34,9 @@ const inputValue = ref();
 const isOpen = ref(false);
 const toggleMenu = (val?: boolean) => {
   isOpen.value = val === undefined ? !isOpen.value : val;
-  if (isOpen.value) update();
+  if (isOpen.value) {
+    update();
+  }
 };
 
 const selectEl = ref(null);
@@ -71,6 +74,12 @@ const getLabelFn = computed(() => {
 
 const getLabel = (option: SelectOptionType | undefined) =>
   option === undefined || typeof option === "string" ? option : getLabelFn.value(option);
+const getKey = (option: SelectOptionType | undefined) =>
+  option === undefined || typeof option === "string"
+    ? option
+    : props.optionKey
+    ? option[props.optionKey]
+    : getLabel(option);
 
 const optionClasses = (option: SelectOptionType, index: number) => {
   return {
@@ -85,7 +94,9 @@ const selectOption = (option: SelectOptionType) => {
   if (props.multiple) {
     const model =
       props.modelValue === undefined ? [] : Array.isArray(props.modelValue) ? props.modelValue : [props.modelValue];
-    const items = model.includes(option) ? model.filter((x) => x !== option) : [...model, option];
+    const key = getKey(option);
+    const foundItem = key && model.find((x) => getKey(x) === key);
+    const items = foundItem ? model.filter((x) => x !== foundItem) : [...model, option];
     if (props.allowEmpty || items.length > 0) {
       emit("update:modelValue", items);
     }
@@ -115,7 +126,7 @@ const highlightOption = (index?: number) => {
         <template v-else>
           <CcPill
             v-for="option in props.modelValue"
-            :key="getLabel(option)"
+            :key="(getKey(option) as string | number | undefined)"
             size="sm"
             :label="getLabel(option)"
             close

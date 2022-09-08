@@ -88,12 +88,27 @@ const state = reactive({
       <div>{{ name1 }}</div>
     </Variant>
 
-    <Variant title="Options object array">
+    <Variant title="Options object array - Single Select">
       <div class="playground">
         <CcSelect
           v-model="name2"
           :options="people"
           label="name"
+          :allow-empty="state.allowEmpty"
+          :disabled="state.disabled"
+        />
+      </div>
+      <div>{{ name2 }}</div>
+    </Variant>
+
+    <Variant title="Options object array - Multi Select">
+      <div class="playground">
+        <CcSelect
+          v-model="name2"
+          :options="people"
+          option-key="name"
+          label="name"
+          multiple
           :allow-empty="state.allowEmpty"
           :disabled="state.disabled"
         />

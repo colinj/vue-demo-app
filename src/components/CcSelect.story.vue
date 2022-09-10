@@ -93,6 +93,7 @@ const state = reactive({
           v-model="name"
           :options="people"
           label="name"
+          :searchable="state.searchable"
           :allow-empty="state.allowEmpty"
           :disabled="state.disabled"
         />

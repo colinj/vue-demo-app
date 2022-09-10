@@ -61,16 +61,11 @@ const toggleMenu = (val?: boolean, keepFocusInInput = false) => {
       nextTick(() => {
         optionEl.value?.focus();
       });
-    } else {
-      inputRef.value?.select();
     }
   } else {
-    console.log("from input");
     nextTick(() => {
       if (props.searchable) {
-        console.log("FOCUS + SELECT");
         inputRef.value?.focus();
-        inputRef.value?.select();
       } else {
         selectEl.value?.focus();
       }
@@ -138,7 +133,6 @@ const selectOption = (option: SelectOptionType, closeMenu = false) => {
     }
   } else {
     const selected = props.allowEmpty && option === props.modelValue ? undefined : option;
-    // inputValue.value = getLabel(selected);
     emit("update:modelValue", selected);
   }
   if (closeMenu) {
@@ -208,7 +202,7 @@ const highlightPrev = () => {
             class="cc-select__input"
             ref="inputRef"
             v-model="inputValue"
-            @focus="toggleMenu(true, true)"
+            @click="toggleMenu(!isOpen, true)"
             @keydown.up.prevent="highlightPrev()"
             @keydown.down.prevent="highlightNext()"
             @keydown.enter.prevent="

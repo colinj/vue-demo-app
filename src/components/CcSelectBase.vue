@@ -1,6 +1,12 @@
 <script setup lang="ts">
 import { computed, nextTick, ref } from "vue";
-import { onClickOutside, useElementBounding, useMouseInElement, useTemplateRefsList } from "@vueuse/core";
+import {
+  onClickOutside,
+  useActiveElement,
+  useElementBounding,
+  useMouseInElement,
+  useTemplateRefsList,
+} from "@vueuse/core";
 import { pluralise } from "@/utils/pluralise";
 import CcIcon from "./CcIcon.vue";
 import CcPill from "./CcPill.vue";
@@ -29,11 +35,21 @@ const emit = defineEmits<{
 }>();
 
 const isMultiple = computed(() => Array.isArray(props.modelValue));
-const inputValue = ref();
+const inputValue = ref("");
 const inputRef = ref<HTMLInputElement | null>(null);
+const activeElement = useActiveElement();
 
+const filteredOptions = computed(() => props.options.filter((x) => (getLabel(x)?.indexOf(inputValue.value) ?? 0) >= 0));
+
+const isClosing = ref(false);
 const isOpen = ref(false);
 const toggleMenu = (val?: boolean, keepFocusInInput = false) => {
+  if (isClosing.value) {
+    isClosing.value = false;
+    isOpen.value = false;
+    return;
+  }
+
   isOpen.value = val === undefined ? !isOpen.value : val;
   if (isOpen.value) {
     update();
@@ -45,10 +61,19 @@ const toggleMenu = (val?: boolean, keepFocusInInput = false) => {
       nextTick(() => {
         optionEl.value?.focus();
       });
+    } else {
+      inputRef.value?.select();
     }
   } else {
+    console.log("from input");
     nextTick(() => {
-      props.searchable ? inputRef.value?.focus() : selectEl.value?.focus();
+      if (props.searchable) {
+        console.log("FOCUS + SELECT");
+        inputRef.value?.focus();
+        inputRef.value?.select();
+      } else {
+        selectEl.value?.focus();
+      }
     });
   }
 };
@@ -87,7 +112,7 @@ const getLabelFn = computed(() => {
 });
 
 const getLabel = (option: SelectOptionType | undefined) =>
-  option === undefined || typeof option === "string" ? option : getLabelFn.value(option);
+  option === undefined || typeof option === "string" ? option ?? "" : getLabelFn.value(option);
 const getKey = (option: SelectOptionType | undefined) =>
   option === undefined || typeof option === "string"
     ? option
@@ -113,11 +138,12 @@ const selectOption = (option: SelectOptionType, closeMenu = false) => {
     }
   } else {
     const selected = props.allowEmpty && option === props.modelValue ? undefined : option;
-    inputValue.value = getLabel(selected);
+    // inputValue.value = getLabel(selected);
     emit("update:modelValue", selected);
   }
   if (closeMenu) {
     console.log("CLOSE MENU");
+    isClosing.value = true;
     toggleMenu(false);
   }
 };
@@ -170,18 +196,26 @@ const highlightPrev = () => {
             </span>
           </template>
         </div>
-        <input
-          v-if="props.searchable"
-          class="cc-select__input"
-          ref="inputRef"
-          v-model="inputValue"
-          @focus="toggleMenu(true, true)"
-          @keydown.up.prevent="highlightPrev()"
-          @keydown.down.prevent="highlightNext()"
-          @keydown.enter.prevent="
-            isOpen ? selectOption(props.options[highlighted], !isMultiple) : toggleMenu(true, true)
-          "
-        />
+        <div v-if="props.searchable" class="cc-select__input-container">
+          <span
+            v-if="!Array.isArray(props.modelValue) && !inputValue"
+            class="cc-select__value"
+            :class="{ 'cc-select--focused': activeElement === inputRef && isOpen }"
+          >
+            {{ getLabel(props.modelValue) }}
+          </span>
+          <input
+            class="cc-select__input"
+            ref="inputRef"
+            v-model="inputValue"
+            @focus="toggleMenu(true, true)"
+            @keydown.up.prevent="highlightPrev()"
+            @keydown.down.prevent="highlightNext()"
+            @keydown.enter.prevent="
+              isOpen ? selectOption(props.options[highlighted], !isMultiple) : toggleMenu(true, true)
+            "
+          />
+        </div>
       </div>
       <button class="cc-select__toggle" tabindex="-1" @click="toggleMenu()">
         <CcIcon name="chevron-down" />
@@ -242,6 +276,10 @@ const highlightPrev = () => {
     color: color(grey-400);
   }
 
+  &__input-container {
+    width: 100%;
+  }
+
   &__input {
     flex-basis: 100%;
 
@@ -250,6 +288,23 @@ const highlightPrev = () => {
 
     border: 1px solid transparent;
     border-radius: $border-radius-sm;
+  }
+
+  &__value {
+    position: absolute;
+
+    display: flex;
+    flex-basis: 100%;
+    align-items: center;
+
+    min-height: 26px;
+    margin: 4px 0 4px 10px;
+
+    color: color(grey-900);
+
+    &.cc-select--focused {
+      color: color(grey-400);
+    }
   }
 
   &__tags {

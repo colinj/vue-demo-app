@@ -39,7 +39,9 @@ const inputValue = ref("");
 const inputRef = ref<HTMLInputElement | null>(null);
 const activeElement = useActiveElement();
 
-const filteredOptions = computed(() => props.options.filter((x) => (getLabel(x)?.indexOf(inputValue.value) ?? 0) >= 0));
+const filteredOptions = computed(() =>
+  props.options.filter((x) => (getLabel(x)?.toLowerCase().indexOf(inputValue.value.toLowerCase()) ?? 0) >= 0)
+);
 
 const isClosing = ref(false);
 const isOpen = ref(false);
@@ -55,7 +57,7 @@ const toggleMenu = (val?: boolean, keepFocusInInput = false) => {
     update();
     const highlightedOption = Array.isArray(props.modelValue) ? props.modelValue[0] : props.modelValue;
     const key = getKey(highlightedOption);
-    const index = props.options.findIndex((x) => getKey(x) === key);
+    const index = filteredOptions.value.findIndex((x) => getKey(x) === key);
     highlightOption(index < 0 ? 0 : index);
     if (!keepFocusInInput) {
       nextTick(() => {
@@ -135,6 +137,7 @@ const selectOption = (option: SelectOptionType, closeMenu = false) => {
     const selected = props.allowEmpty && option === props.modelValue ? undefined : option;
     emit("update:modelValue", selected);
   }
+  inputValue.value = "";
   if (closeMenu) {
     console.log("CLOSE MENU");
     isClosing.value = true;
@@ -146,11 +149,11 @@ const highlightOption = (index: number) => {
   highlighted.value = index;
 };
 const highlightNext = () => {
-  highlighted.value = highlighted.value < props.options.length - 1 ? highlighted.value + 1 : 0;
+  highlighted.value = highlighted.value < filteredOptions.value.length - 1 ? highlighted.value + 1 : 0;
 };
 
 const highlightPrev = () => {
-  highlighted.value = highlighted.value > 0 ? highlighted.value - 1 : props.options.length - 1;
+  highlighted.value = highlighted.value > 0 ? highlighted.value - 1 : filteredOptions.value.length - 1;
 };
 </script>
 
@@ -205,8 +208,9 @@ const highlightPrev = () => {
             @click="toggleMenu(!isOpen, true)"
             @keydown.up.prevent="highlightPrev()"
             @keydown.down.prevent="highlightNext()"
+            @keydown.esc.prevent="toggleMenu(false, true)"
             @keydown.enter.prevent="
-              isOpen ? selectOption(props.options[highlighted], !isMultiple) : toggleMenu(true, true)
+              isOpen ? selectOption(filteredOptions[highlighted], !isMultiple) : toggleMenu(true, true)
             "
           />
         </div>
@@ -225,17 +229,17 @@ const highlightPrev = () => {
         @mouseleave="highlightOption(-1)"
         @keydown.up="highlightPrev()"
         @keydown.down="highlightNext()"
-        @keydown.space="selectOption(props.options[highlighted], !isMultiple)"
-        @keydown.enter="selectOption(props.options[highlighted], !isMultiple)"
+        @keydown.space="selectOption(filteredOptions[highlighted], !isMultiple)"
+        @keydown.enter="selectOption(filteredOptions[highlighted], !isMultiple)"
         @keydown.esc="toggleMenu(false)"
         @keydown.tab="toggleMenu(false)"
       >
-        <li v-if="props.options.length === 0" class="cc-option__empty">
+        <li v-if="filteredOptions.length === 0" class="cc-option__empty">
           <slot name="noOptions"><em>List is empty</em></slot>
         </li>
         <template v-else>
           <li
-            v-for="(option, index) in props.options"
+            v-for="(option, index) in filteredOptions"
             :key="getLabel(option)"
             :ref="optionEls.set"
             class="cc-option__item"

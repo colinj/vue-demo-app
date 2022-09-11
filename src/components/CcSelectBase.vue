@@ -192,11 +192,11 @@ const highlightPrev = () => {
         </div>
         <div v-if="props.searchable && (!isMultiple || isOpen)" class="cc-select__input-container">
           <span
-            v-if="!Array.isArray(props.modelValue) && !inputValue"
+            v-if="!inputValue"
             class="cc-select__value"
-            :class="{ 'cc-select--focused': activeElement === inputRef && isOpen }"
+            :class="{ 'cc-select--focused': isOpen && (activeElement === inputRef || isMultiple) }"
           >
-            {{ getLabel(props.modelValue) }}
+            {{ Array.isArray(props.modelValue) ? "Search options" : getLabel(props.modelValue) }}
           </span>
           <input
             class="cc-select__input"

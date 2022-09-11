@@ -28,6 +28,8 @@
 
     border: 1px solid transparent;
     border-radius: $border-radius-sm;
+
+    outline: none;
   }
 
   &__value {
@@ -104,6 +106,12 @@
   border-radius: 0 0 $border-radius-sm $border-radius-sm;
 
   background-color: #fff;
+
+  outline: 0;
+
+  &:focus-visible {
+    outline: 1px auto color(blue-700);
+  }
 
   &__empty {
     @extend %cc-option-item;

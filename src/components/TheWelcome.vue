@@ -5,6 +5,11 @@ import ToolingIcon from "./icons/IconTooling.vue";
 import EcosystemIcon from "./icons/IconEcosystem.vue";
 import CommunityIcon from "./icons/IconCommunity.vue";
 import SupportIcon from "./icons/IconSupport.vue";
+import CcSelect from "./CcSelect.vue";
+import { ref } from "vue";
+
+const names = ref(["Tom", "Jane", "Peter", "Mary", "Jordan", "Polly", "Amanda", "Billy"]);
+const name = ref("");
 </script>
 
 <template>
@@ -78,6 +83,108 @@ import SupportIcon from "./icons/IconSupport.vue";
     and follow the official
     <a target="_blank" href="https://twitter.com/vuejs">@vuejs</a>
     twitter account for latest news in the Vue world.
+  </WelcomeItem>
+
+  <WelcomeItem>
+    <template #icon>
+      <SupportIcon />
+    </template>
+    <template #heading>Support Vue</template>
+
+    As an independent project, Vue relies on community backing for its sustainability. You can help us by
+    <a target="_blank" href="https://vuejs.org/sponsor/">becoming a sponsor</a>
+    .
+  </WelcomeItem>
+
+  <div>{{ name }}</div>
+  <CcSelect v-model="name" :options="names" allow-empty />
+
+  <WelcomeItem>
+    <template #icon>
+      <SupportIcon />
+    </template>
+    <template #heading>Support Vue</template>
+
+    As an independent project, Vue relies on community backing for its sustainability. You can help us by
+    <a target="_blank" href="https://vuejs.org/sponsor/">becoming a sponsor</a>
+    .
+  </WelcomeItem>
+
+  <WelcomeItem>
+    <template #icon>
+      <SupportIcon />
+    </template>
+    <template #heading>Support Vue</template>
+
+    As an independent project, Vue relies on community backing for its sustainability. You can help us by
+    <a target="_blank" href="https://vuejs.org/sponsor/">becoming a sponsor</a>
+    .
+  </WelcomeItem>
+
+  <WelcomeItem>
+    <template #icon>
+      <SupportIcon />
+    </template>
+    <template #heading>Support Vue</template>
+
+    As an independent project, Vue relies on community backing for its sustainability. You can help us by
+    <a target="_blank" href="https://vuejs.org/sponsor/">becoming a sponsor</a>
+    .
+  </WelcomeItem>
+
+  <WelcomeItem>
+    <template #icon>
+      <SupportIcon />
+    </template>
+    <template #heading>Support Vue</template>
+
+    As an independent project, Vue relies on community backing for its sustainability. You can help us by
+    <a target="_blank" href="https://vuejs.org/sponsor/">becoming a sponsor</a>
+    .
+  </WelcomeItem>
+
+  <WelcomeItem>
+    <template #icon>
+      <SupportIcon />
+    </template>
+    <template #heading>Support Vue</template>
+
+    As an independent project, Vue relies on community backing for its sustainability. You can help us by
+    <a target="_blank" href="https://vuejs.org/sponsor/">becoming a sponsor</a>
+    .
+  </WelcomeItem>
+
+  <WelcomeItem>
+    <template #icon>
+      <SupportIcon />
+    </template>
+    <template #heading>Support Vue</template>
+
+    As an independent project, Vue relies on community backing for its sustainability. You can help us by
+    <a target="_blank" href="https://vuejs.org/sponsor/">becoming a sponsor</a>
+    .
+  </WelcomeItem>
+
+  <WelcomeItem>
+    <template #icon>
+      <SupportIcon />
+    </template>
+    <template #heading>Support Vue</template>
+
+    As an independent project, Vue relies on community backing for its sustainability. You can help us by
+    <a target="_blank" href="https://vuejs.org/sponsor/">becoming a sponsor</a>
+    .
+  </WelcomeItem>
+
+  <WelcomeItem>
+    <template #icon>
+      <SupportIcon />
+    </template>
+    <template #heading>Support Vue</template>
+
+    As an independent project, Vue relies on community backing for its sustainability. You can help us by
+    <a target="_blank" href="https://vuejs.org/sponsor/">becoming a sponsor</a>
+    .
   </WelcomeItem>
 
   <WelcomeItem>

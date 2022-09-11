@@ -12,7 +12,7 @@ import CcIcon from "@/components/CcIcon.vue";
 
 interface Props {
   id?: string;
-  modelValue?: string | number;
+  modelValue?: string | number | undefined;
   type?: string;
   modelModifiers?: { lazy: boolean };
   icon?: IconName;
@@ -33,7 +33,7 @@ const props = withDefaults(defineProps<Props>(), {
   hasError: false,
 });
 const emit = defineEmits<{
-  (e: "update:modelValue", v: string | number): void;
+  (e: "update:modelValue", v: string | number | undefined): void;
 }>();
 
 const updateValue = (target: HTMLInputElement) => {

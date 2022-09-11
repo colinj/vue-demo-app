@@ -1,0 +1,140 @@
+.cc-select {
+  display: flex;
+  align-items: center;
+
+  border: 1px solid black;
+  border-radius: $border-radius-sm;
+
+  &__container {
+    display: flex;
+    flex-flow: row wrap;
+
+    width: 100%;
+  }
+
+  &__placeholder {
+    color: color(grey-400);
+  }
+
+  &__input-container {
+    width: 100%;
+  }
+
+  &__input {
+    flex-basis: 100%;
+
+    width: 100%;
+    padding: 4px 0 4px 8px;
+
+    border: 1px solid transparent;
+    border-radius: $border-radius-sm;
+
+    outline: none;
+  }
+
+  &__value {
+    position: absolute;
+
+    display: flex;
+    flex-basis: 100%;
+    align-items: center;
+
+    min-height: 26px;
+    margin: 4px 0 4px 10px;
+
+    color: color(grey-900);
+
+    &.cc-select--focused {
+      color: color(grey-400);
+    }
+  }
+
+  &__tags {
+    display: flex;
+    flex-basis: 100%;
+    flex-flow: row wrap;
+    gap: 4px;
+    align-items: center;
+
+    width: 100%;
+    min-height: 26px;
+    margin: 4px 0 4px 10px;
+
+    &:empty {
+      display: none;
+    }
+  }
+
+  &__toggle {
+    display: grid;
+    place-content: center;
+    align-self: stretch;
+
+    padding: 8px;
+
+    border: 0;
+
+    background-color: transparent;
+
+    svg {
+      transition: transform 0.2s ease;
+    }
+  }
+
+  &--open {
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
+
+    .cc-select__toggle svg {
+      transform: rotate(180deg);
+    }
+  }
+}
+
+%cc-option-item {
+  padding: 0 8px;
+
+  line-height: 2;
+}
+
+.cc-option {
+  position: absolute;
+
+  padding: 4px 0;
+
+  border: 1px solid black;
+  border-radius: 0 0 $border-radius-sm $border-radius-sm;
+
+  background-color: #fff;
+
+  outline: 0;
+
+  &:focus-visible {
+    outline: 1px auto color(blue-700);
+  }
+
+  &__empty {
+    @extend %cc-option-item;
+    color: color(grey-400);
+
+    cursor: default;
+  }
+
+  &__item {
+    @extend %cc-option-item;
+  }
+
+  &--selected {
+    color: #fff;
+
+    background-color: color(blue-400);
+  }
+
+  &--highlighted {
+    background-color: color(blue-200);
+
+    &.cc-option--selected {
+      background-color: color(blue-600);
+    }
+  }
+}

@@ -46,12 +46,6 @@ const filteredOptions = computed(() =>
 const isClosing = ref(false);
 const isOpen = ref(false);
 const toggleMenu = (val?: boolean) => {
-  // if (isClosing.value) {
-  //   isClosing.value = false;
-  //   isOpen.value = false;
-  //   return;
-  // }
-
   isOpen.value = val === undefined ? !isOpen.value : val;
   if (isOpen.value) {
     update();
@@ -61,7 +55,12 @@ const toggleMenu = (val?: boolean) => {
     highlightOption(index < 0 ? 0 : index);
   }
   nextTick(() => {
-    const el = props.searchable && !isMultiple.value ? inputRef.value : isOpen.value ? optionEl.value : selectEl.value;
+    const el =
+      props.searchable && (isOpen.value || !isMultiple.value)
+        ? inputRef.value
+        : isOpen.value
+        ? optionEl.value
+        : selectEl.value;
     console.log("FOCUS", el);
     el?.focus();
   });
@@ -200,11 +199,12 @@ const highlightPrev = () => {
             class="cc-select__input"
             ref="inputRef"
             v-model="inputValue"
-            @click="toggleMenu(!isOpen)"
+            @click="!isMultiple && toggleMenu(!isOpen)"
             @keydown.up.prevent="highlightPrev()"
             @keydown.down.prevent="highlightNext()"
             @keydown.esc.prevent="toggleMenu(false)"
-            @keydown.enter.prevent="isOpen ? selectOption(filteredOptions[highlighted]) : toggleMenu(true)"
+            @keydown.tab.prevent="toggleMenu(false)"
+            @keydown.enter.prevent.stop="isOpen ? selectOption(filteredOptions[highlighted]) : toggleMenu(true)"
           />
         </div>
       </div>

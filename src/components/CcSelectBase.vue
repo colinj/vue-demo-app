@@ -29,6 +29,7 @@ const props = withDefaults(defineProps<Props>(), {
   allowEmpty: false,
   searchable: false,
   showTags: false,
+  placeholder: "Please select an option",
 });
 const emit = defineEmits<{
   (e: "update:modelValue", v: SelectValueType): void;
@@ -160,7 +161,13 @@ const highlightPrev = () => {
       <div class="cc-select__container">
         <div class="cc-select__tags" @click="toggleMenu()">
           <template v-if="Array.isArray(props.modelValue)">
-            <template v-if="props.showTags">
+            <span
+              v-if="props.placeholder && props.modelValue.length === 0 && !props.allowEmpty"
+              class="cc-select__placeholder"
+            >
+              {{ props.placeholder }}
+            </span>
+            <template v-else-if="props.showTags">
               <CcPill
                 v-for="option in props.modelValue"
                 :key="(getKey(option) as string | number | undefined)"

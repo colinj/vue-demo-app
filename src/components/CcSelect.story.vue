@@ -102,6 +102,7 @@ const state = reactive({
         />
       </div>
       <div>{{ name }}</div>
+      <div v-if="name === undefined">Undefined value!</div>
     </Variant>
 
     <Variant title="Options object array - Multi Select">

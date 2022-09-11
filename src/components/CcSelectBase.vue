@@ -43,7 +43,6 @@ const filteredOptions = computed(() =>
   props.options.filter((x) => (getLabel(x)?.toLowerCase().indexOf(inputValue.value.toLowerCase()) ?? 0) >= 0)
 );
 
-const isClosing = ref(false);
 const isOpen = ref(false);
 const toggleMenu = (val?: boolean) => {
   isOpen.value = val === undefined ? !isOpen.value : val;
@@ -61,7 +60,6 @@ const toggleMenu = (val?: boolean) => {
         : isOpen.value
         ? optionEl.value
         : selectEl.value;
-    console.log("FOCUS", el);
     el?.focus();
   });
 };
@@ -133,8 +131,6 @@ const selectOption = (option: SelectOptionType | undefined) => {
   }
   inputValue.value = "";
   if (!isMultiple.value) {
-    console.log("CLOSE MENU");
-    isClosing.value = true;
     toggleMenu(false);
   }
 };

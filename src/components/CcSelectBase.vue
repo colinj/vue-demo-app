@@ -45,12 +45,12 @@ const filteredOptions = computed(() =>
 
 const isClosing = ref(false);
 const isOpen = ref(false);
-const toggleMenu = (val?: boolean, keepFocusInInput = false) => {
-  if (isClosing.value) {
-    isClosing.value = false;
-    isOpen.value = false;
-    return;
-  }
+const toggleMenu = (val?: boolean) => {
+  // if (isClosing.value) {
+  //   isClosing.value = false;
+  //   isOpen.value = false;
+  //   return;
+  // }
 
   isOpen.value = val === undefined ? !isOpen.value : val;
   if (isOpen.value) {
@@ -59,26 +59,18 @@ const toggleMenu = (val?: boolean, keepFocusInInput = false) => {
     const key = getKey(highlightedOption);
     const index = filteredOptions.value.findIndex((x) => getKey(x) === key);
     highlightOption(index < 0 ? 0 : index);
-    if (!keepFocusInInput) {
-      nextTick(() => {
-        optionEl.value?.focus();
-      });
-    }
-  } else {
-    nextTick(() => {
-      if (props.searchable) {
-        inputRef.value?.focus();
-      } else {
-        selectEl.value?.focus();
-      }
-    });
   }
+  nextTick(() => {
+    const el = props.searchable && !isMultiple.value ? inputRef.value : isOpen.value ? optionEl.value : selectEl.value;
+    console.log("FOCUS", el);
+    el?.focus();
+  });
 };
 
 const selectEl = ref<HTMLElement | null>(null);
 onClickOutside(selectEl, () => {
-  if (!isMultiple.value || isOutside.value) {
-    isOpen.value = false;
+  if (isOpen.value && (!isMultiple.value || isOutside.value)) {
+    toggleMenu(false);
   }
 });
 const { top, left, height, width, update } = useElementBounding(selectEl);
@@ -125,7 +117,10 @@ const optionClasses = (option: SelectOptionType, index: number) => {
     "cc-option--highlighted": index === highlighted.value,
   };
 };
-const selectOption = (option: SelectOptionType, closeMenu = false) => {
+const selectOption = (option: SelectOptionType | undefined) => {
+  if (option === undefined) {
+    return;
+  }
   if (Array.isArray(props.modelValue)) {
     const key = getKey(option);
     const foundItem = key && props.modelValue.find((x) => getKey(x) === key);
@@ -138,7 +133,7 @@ const selectOption = (option: SelectOptionType, closeMenu = false) => {
     emit("update:modelValue", selected);
   }
   inputValue.value = "";
-  if (closeMenu) {
+  if (!isMultiple.value) {
     console.log("CLOSE MENU");
     isClosing.value = true;
     toggleMenu(false);
@@ -164,8 +159,8 @@ const highlightPrev = () => {
       class="cc-select"
       :class="{ 'cc-select--open': isOpen }"
       tabindex="0"
-      @keydown.space="!props.searchable && toggleMenu()"
-      @keydown.enter="!props.searchable && toggleMenu()"
+      @keydown.space="(!props.searchable || isMultiple) && toggleMenu()"
+      @keydown.enter="(!props.searchable || isMultiple) && toggleMenu()"
     >
       <div class="cc-select__container">
         <div class="cc-select__tags" @click="toggleMenu()">
@@ -193,7 +188,7 @@ const highlightPrev = () => {
             </span>
           </template>
         </div>
-        <div v-if="props.searchable" class="cc-select__input-container">
+        <div v-if="props.searchable && (!isMultiple || isOpen)" class="cc-select__input-container">
           <span
             v-if="!Array.isArray(props.modelValue) && !inputValue"
             class="cc-select__value"
@@ -205,13 +200,11 @@ const highlightPrev = () => {
             class="cc-select__input"
             ref="inputRef"
             v-model="inputValue"
-            @click="toggleMenu(!isOpen, true)"
+            @click="toggleMenu(!isOpen)"
             @keydown.up.prevent="highlightPrev()"
             @keydown.down.prevent="highlightNext()"
-            @keydown.esc.prevent="toggleMenu(false, true)"
-            @keydown.enter.prevent="
-              isOpen ? selectOption(filteredOptions[highlighted], !isMultiple) : toggleMenu(true, true)
-            "
+            @keydown.esc.prevent="toggleMenu(false)"
+            @keydown.enter.prevent="isOpen ? selectOption(filteredOptions[highlighted]) : toggleMenu(true)"
           />
         </div>
       </div>
@@ -229,8 +222,8 @@ const highlightPrev = () => {
         @mouseleave="highlightOption(-1)"
         @keydown.up="highlightPrev()"
         @keydown.down="highlightNext()"
-        @keydown.space="selectOption(filteredOptions[highlighted], !isMultiple)"
-        @keydown.enter="selectOption(filteredOptions[highlighted], !isMultiple)"
+        @keydown.space="selectOption(filteredOptions[highlighted])"
+        @keydown.enter="selectOption(filteredOptions[highlighted])"
         @keydown.esc="toggleMenu(false)"
         @keydown.tab="toggleMenu(false)"
       >
@@ -244,7 +237,7 @@ const highlightPrev = () => {
             :ref="optionEls.set"
             class="cc-option__item"
             :class="optionClasses(option, index)"
-            @click="selectOption(option, !isMultiple)"
+            @click="selectOption(option)"
             @mouseenter="highlightOption(index)"
           >
             {{ getLabel(option) }}

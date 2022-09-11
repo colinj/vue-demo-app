@@ -68,6 +68,7 @@ const state = reactive({
           :searchable="state.searchable"
           :show-tags="state.showTags"
           :disabled="state.disabled"
+          :placeholder="state.placeholder"
         />
       </div>
       <div>{{ nameStringArray }}</div>
@@ -82,6 +83,7 @@ const state = reactive({
           :allow-empty="state.allowEmpty"
           :searchable="state.searchable"
           :disabled="state.disabled"
+          :placeholder="state.placeholder"
         />
       </div>
       <div>{{ nameStringArray }}</div>
@@ -96,6 +98,7 @@ const state = reactive({
           :searchable="state.searchable"
           :allow-empty="state.allowEmpty"
           :disabled="state.disabled"
+          :placeholder="state.placeholder"
         />
       </div>
       <div>{{ name }}</div>
@@ -108,6 +111,7 @@ const state = reactive({
           :options="people"
           option-key="name"
           label="name"
+          :searchable="state.searchable"
           :allow-empty="state.allowEmpty"
           :disabled="state.disabled"
         />
@@ -121,8 +125,10 @@ const state = reactive({
           v-model="name"
           :options="people"
           :label="(val) => `${val.name} is awesome!`"
+          :searchable="state.searchable"
           :allow-empty="state.allowEmpty"
           :disabled="state.disabled"
+          :placeholder="state.placeholder"
         />
       </div>
       <div>{{ name }}</div>

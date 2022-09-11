@@ -24,17 +24,10 @@ const emit = defineEmits(["update:modelValue", "click"]);
 
 const isOpen = ref(false);
 const height = ref("0");
-const overflowStyle = ref(false);
 const pressDown = ref(false);
 
 const updateState = (val?: boolean) => {
   isOpen.value = val ?? !isOpen.value;
-  setTimeout(
-    () => {
-      overflowStyle.value = isOpen.value;
-    },
-    isOpen.value ? 200 : 0
-  );
 };
 const toggle = (val?: boolean) => {
   if (typeof props.modelValue === "boolean") {
@@ -102,7 +95,7 @@ onUpdated(() => {
         </template>
       </div>
     </div>
-    <div ref="panel" class="cc-accordion__content" :style="{ overflow: overflowStyle ? 'visible' : undefined }">
+    <div ref="panel" class="cc-accordion__content">
       <div class="cc-accordion__inner-content">
         <slot name="content" />
       </div>

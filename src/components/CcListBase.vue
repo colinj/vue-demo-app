@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, watch } from "vue";
 
 export type ListOptionType = string | Record<string, unknown>;
 export type ListValueType = ListOptionType | ListOptionType[] | undefined | Record<string, unknown>;
@@ -7,6 +7,7 @@ export type ListValueType = ListOptionType | ListOptionType[] | undefined | Reco
 export interface Props {
   modelValue?: ListValueType;
   options: ListOptionType[];
+  maxHeight?: string;
   required?: boolean;
   disabled?: boolean;
   disableItem?: (index: number) => boolean;
@@ -18,6 +19,8 @@ const props = withDefaults(defineProps<Props>(), {
 const emit = defineEmits<{
   (e: "update:modelValue", v: ListValueType): void;
 }>();
+
+const listEl = ref<HTMLDivElement | null>(null);
 
 const highlighted = ref(-1);
 const highlightOption = (index: number) => {
@@ -41,6 +44,11 @@ const highlightPrev = () => {
   } while (props.disableItem && props.disableItem(x));
   highlighted.value = x;
 };
+
+watch(highlighted, (val) => {
+  const el = listEl.value?.querySelector(`[data-index="${val}"]`);
+  if (el) el.scrollIntoView({ block: "nearest" });
+});
 
 const optionClasses = (option: ListOptionType, index: number) => {
   return {
@@ -72,11 +80,13 @@ const selectOption = (option: ListOptionType | undefined) => {
 <template>
   <ul
     class="cc-list"
+    ref="listEl"
     :class="{ 'cc-list--disabled': props.disabled }"
+    :style="{ maxHeight: props.maxHeight }"
     :tabindex="props.disabled ? '-1' : '0'"
     @mouseleave="highlightOption(-1)"
-    @keydown.up="highlightPrev()"
-    @keydown.down="highlightNext()"
+    @keydown.up.prevent="highlightPrev()"
+    @keydown.down.prevent="highlightNext()"
     @keydown.space="selectOption(props.options[highlighted])"
     @keydown.enter="selectOption(props.options[highlighted])"
   >
@@ -86,6 +96,7 @@ const selectOption = (option: ListOptionType | undefined) => {
     <template v-else>
       <li
         v-for="(option, index) in props.options"
+        :data-index="index"
         :key="index"
         class="cc-list__item"
         :class="optionClasses(option, index)"

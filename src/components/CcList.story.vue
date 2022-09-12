@@ -28,6 +28,7 @@ const personArray = ref<Person[]>([]);
 const state = reactive({
   required: false,
   disabled: false,
+  maxHeight: "200px",
 });
 </script>
 
@@ -52,6 +53,7 @@ const state = reactive({
         <CcList
           v-model="name"
           :options="names"
+          :max-height="state.maxHeight"
           :required="state.required"
           :disabled="state.disabled"
           v-slot="{ option }"
@@ -117,6 +119,7 @@ const state = reactive({
     </Variant>
 
     <template #controls>
+      <HstText v-model="state.maxHeight" title="Max Height" />
       <HstCheckbox v-model="state.required" title="Required" />
       <HstCheckbox v-model="state.disabled" title="Disabled" />
     </template>

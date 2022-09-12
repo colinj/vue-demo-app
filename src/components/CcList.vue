@@ -6,6 +6,7 @@ import CcListBase from "./CcListBase.vue";
 export interface StringProp {
   modelValue?: string | string[];
   options: string[];
+  maxHeight?: string;
   required?: boolean;
   disabled?: boolean;
   disableItem?: (index: number) => boolean;
@@ -15,6 +16,7 @@ export interface ObjectProp<T extends Record<string, unknown>> {
   modelValue?: T | T[];
   options: T[];
   key: KeysMatching<T, string | number>;
+  maxHeight?: string;
   required?: boolean;
   disabled?: boolean;
   disableItem?: (index: number) => boolean;

@@ -2,14 +2,14 @@
 import { reactive, ref } from "vue";
 import CcList from "./CcList.vue";
 
-interface People {
+interface Person {
   name: string;
   age: number;
   pet?: string;
 }
 
 const names = ref(["Tom", "Jane", "Peter", "Mary", "Jordan", "Polly", "Amanda", "Billy"]);
-const people = ref([
+const people = ref<Person[]>([
   { name: "Tom", age: 23, pet: "Paddington" },
   { name: "Jane", age: 42, pet: "Fido" },
   { name: "Peter", age: 51 },
@@ -19,9 +19,12 @@ const people = ref([
   { name: "Amanda", age: 29 },
   { name: "Billy", age: 31, pet: "Rango" },
 ]);
+
 const name = ref<string>();
 const nameStringArray = ref<string[]>([]);
-const nameObjectArray = ref<People[]>([]);
+const person = ref<Person>({} as Person);
+const personArray = ref<Person[]>([]);
+
 const state = reactive({
   allowEmpty: false,
   disabled: false,
@@ -32,13 +35,13 @@ const state = reactive({
   <Story title="CcList">
     <Variant title="No options (empty list)">
       <div class="playground">
-        <CcList v-model="name" :options="[]" placeholder="Please choose an option" />
+        <CcList v-model="name" :options="([] as string[])" />
       </div>
     </Variant>
 
     <Variant title="no-options slot: No options (empty list)">
       <div class="playground">
-        <CcList v-model="name" :options="[]" placeholder="Please select an option">
+        <CcList v-model="name" :options="([] as string[])">
           <template #noOptions><em>Hey! You have no options available!</em></template>
         </CcList>
       </div>
@@ -46,23 +49,33 @@ const state = reactive({
 
     <Variant title="Single-Select: String array options">
       <div class="playground">
-        <CcList v-model="name" :options="names" :allow-empty="state.allowEmpty" :disabled="state.disabled" />
+        <CcList
+          v-model="name"
+          :options="names"
+          :allow-empty="state.allowEmpty"
+          :disabled="state.disabled"
+          v-slot="{ option }"
+        >
+          {{ option + " Yes. this is a string" }}
+        </CcList>
       </div>
-      <div>{{ name }}</div>
+      <div>{{ name ?? "Undefined value" }}</div>
     </Variant>
 
     <Variant title="Single Select: Object array options">
       <div class="playground">
         <CcList
-          v-model="name"
+          v-model="person"
           :options="people"
-          label="name"
           :allow-empty="state.allowEmpty"
           :disabled="state.disabled"
-        />
+          key="age"
+          v-slot="{ option }"
+        >
+          {{ option.name }} from the object
+        </CcList>
       </div>
-      <div>{{ name }}</div>
-      <div v-if="name === undefined">Undefined value!</div>
+      <div>{{ person ?? "Undefined value!" }}</div>
     </Variant>
 
     <Variant title="Multi-Select: String array options">
@@ -75,28 +88,16 @@ const state = reactive({
     <Variant title="Multi-Select: Object array options">
       <div class="playground">
         <CcList
-          v-model="nameObjectArray"
+          v-model="personArray"
           :options="people"
-          option-key="name"
-          label="name"
           :allow-empty="state.allowEmpty"
           :disabled="state.disabled"
-        />
+          key="name"
+        >
+          <template #default="{ option }">{{ option.name }} from the object</template>
+        </CcList>
       </div>
-      <div>{{ nameObjectArray }}</div>
-    </Variant>
-
-    <Variant title="Options object array with label function (single select)">
-      <div class="playground">
-        <CcList
-          v-model="name"
-          :options="people"
-          :label="(val) => `${val.name} is awesome!`"
-          :allow-empty="state.allowEmpty"
-          :disabled="state.disabled"
-        />
-      </div>
-      <div>{{ name }}</div>
+      <div>{{ personArray }}</div>
     </Variant>
 
     <template #controls>

@@ -1,108 +1,32 @@
-<script setup lang="ts">
-import { computed, ref } from "vue";
+<script lang="ts">
+import type { VNode } from "vue";
+import type { KeysMatching } from "@/types";
+import CcListBase from "./CcListBase.vue";
 
-type SelectOptionType = string | Record<string, unknown>;
-
-type SelectValueType = SelectOptionType | SelectOptionType[] | undefined;
-
-interface Props {
-  modelValue?: SelectValueType;
-  options: SelectOptionType[];
-  optionKey?: string;
-  label?: string | ((option: Record<string, unknown>) => string);
+export interface StringProp {
+  modelValue?: string | string[];
+  options: string[];
   allowEmpty?: boolean;
 }
-const props = withDefaults(defineProps<Props>(), {
-  allowEmpty: false,
-});
-const emit = defineEmits<{
-  (e: "update:modelValue", v: SelectValueType): void;
-}>();
 
-const highlighted = ref(-1);
+export interface ObjectProp<T extends Record<string, unknown>> {
+  modelValue?: T | T[];
+  options: T[];
+  allowEmpty?: boolean;
+  key: KeysMatching<T, string | number>;
+}
 
-const getLabelFn = computed(() => {
-  if (props.label !== undefined) {
-    if (typeof props.label === "function") {
-      return props.label;
-    } else {
-      const key = props.label;
-      return (option: Record<string, unknown>) => option[key] as string;
-    }
-  }
-  return () => "label property undefined for options object array";
-});
+type Props<T extends string | Record<string, unknown>> = T extends Record<string, unknown> ? ObjectProp<T> : StringProp;
 
-const getLabel = (option: SelectOptionType | undefined) =>
-  option === undefined || typeof option === "string" ? option ?? "" : getLabelFn.value(option);
-const getKey = (option: SelectOptionType | undefined) =>
-  option === undefined || typeof option === "string"
-    ? option
-    : props.optionKey
-    ? option[props.optionKey]
-    : getLabel(option);
+interface Slots<T> {
+  default?: (context: { option: T }) => VNode[] | undefined;
+  noOptions?: () => VNode[] | undefined;
+}
 
-const optionClasses = (option: SelectOptionType, index: number) => {
-  return {
-    "cc-list--selected": Array.isArray(props.modelValue)
-      ? props.modelValue.includes(option)
-      : props.modelValue === option,
-    "cc-list--highlighted": index === highlighted.value,
-  };
-};
-const selectOption = (option: SelectOptionType | undefined) => {
-  if (option === undefined) {
-    return;
-  }
-  if (Array.isArray(props.modelValue)) {
-    const key = getKey(option);
-    const foundItem = key && props.modelValue.find((x) => getKey(x) === key);
-    const items = foundItem ? props.modelValue.filter((x) => x !== foundItem) : [...props.modelValue, option];
-    if (props.allowEmpty || items.length > 0) {
-      emit("update:modelValue", items);
-    }
-  } else {
-    const selected = props.allowEmpty && option === props.modelValue ? undefined : option;
-    emit("update:modelValue", selected);
-  }
+type CcList = new <T extends string | Record<string, unknown>>(props: Props<T>) => {
+  $props: Props<T>;
+  $slots: Slots<T>;
 };
 
-const highlightOption = (index: number) => {
-  highlighted.value = index;
-};
-const highlightNext = () => {
-  highlighted.value = highlighted.value < props.options.length - 1 ? highlighted.value + 1 : 0;
-};
-
-const highlightPrev = () => {
-  highlighted.value = highlighted.value > 0 ? highlighted.value - 1 : props.options.length - 1;
-};
+export default CcListBase as CcList;
 </script>
-
-<template>
-  <ul
-    class="cc-list"
-    tabindex="-1"
-    @mouseleave="highlightOption(-1)"
-    @keydown.up="highlightPrev()"
-    @keydown.down="highlightNext()"
-    @keydown.space="selectOption(props.options[highlighted])"
-    @keydown.enter="selectOption(props.options[highlighted])"
-  >
-    <li v-if="props.options.length === 0" class="cc-list__empty">
-      <slot name="noOptions"><em>List is empty</em></slot>
-    </li>
-    <template v-else>
-      <li
-        v-for="(option, index) in props.options"
-        :key="getLabel(option)"
-        class="cc-list__item"
-        :class="optionClasses(option, index)"
-        @click="selectOption(option)"
-        @mouseenter="highlightOption(index)"
-      >
-        {{ getLabel(option) }}
-      </li>
-    </template>
-  </ul>
-</template>

@@ -1,0 +1,47 @@
+%cc-list-item {
+  padding: 0 8px;
+
+  line-height: 2;
+}
+
+.cc-list {
+  position: absolute;
+
+  padding: 4px 0;
+
+  border: 1px solid black;
+  border-radius: 0 0 $border-radius-sm $border-radius-sm;
+
+  background-color: #fff;
+
+  outline: 0;
+
+  &:focus-visible {
+    outline: 1px auto color(blue-700);
+  }
+
+  &__empty {
+    @extend %cc-list-item;
+    color: color(grey-400);
+
+    cursor: default;
+  }
+
+  &__item {
+    @extend %cc-list-item;
+  }
+
+  &--selected {
+    color: #fff;
+
+    background-color: color(blue-400);
+  }
+
+  &--highlighted {
+    background-color: color(blue-200);
+
+    &.cc-list--selected {
+      background-color: color(blue-600);
+    }
+  }
+}

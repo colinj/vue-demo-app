@@ -58,5 +58,5 @@
 }
 
 @function box-shadow-border($color, $width: 1) {
-  @return inset 0 (-1px * $width) 0 0 $color, inset (1px * $width) 0 0 0 $color, inset (-1px * $width) 0 0 0 $color, inset 0 (1px * $width) 0 0 $color;
+  @return inset 0 0 0 (1px * $width) $color;
 }

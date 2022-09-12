@@ -29,9 +29,13 @@ interface Slots<T> {
   noOptions?: () => VNode[] | undefined;
 }
 
-type CcList = new <T extends string | Record<string, unknown>>(props: Props<T>) => {
+type CcList = new <T extends string | Record<string, unknown> = string>(props: Props<T>) => {
   $props: Props<T>;
   $slots: Slots<T>;
+  $emit: {
+    (e: "update:modelValue", v: T | T[]): void;
+    (e: "select", v: T): void;
+  };
 };
 
 export default CcListBase as CcList;

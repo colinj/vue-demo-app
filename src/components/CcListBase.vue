@@ -18,6 +18,7 @@ const props = withDefaults(defineProps<Props>(), {
 });
 const emit = defineEmits<{
   (e: "update:modelValue", v: ListValueType): void;
+  (e: "select", v: ListOptionType): void;
 }>();
 
 const listEl = ref<HTMLDivElement | null>(null);
@@ -74,6 +75,7 @@ const selectOption = (option: ListOptionType | undefined) => {
     const selected = !props.required && option === props.modelValue ? undefined : option;
     emit("update:modelValue", selected);
   }
+  emit("select", option);
 };
 </script>
 

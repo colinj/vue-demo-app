@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { reactive, ref } from "vue";
+import { hstEvent } from "histoire/client";
 import CcList from "./CcList.vue";
 
 interface Person {
@@ -7,7 +8,6 @@ interface Person {
   age: number;
   pet?: string;
 }
-
 const names = ref(["Tom", "Jane", "Peter", "Mary", "Jordan", "Polly", "Amanda", "Billy"]);
 const people = ref<Person[]>([
   { name: "Tom", age: 23, pet: "Paddington" },
@@ -57,6 +57,7 @@ const state = reactive({
           :required="state.required"
           :disabled="state.disabled"
           v-slot="{ option }"
+          @select="hstEvent('Select', { value: $event })"
         >
           {{ option + " Yes. this is a string" }}
         </CcList>
@@ -118,6 +119,31 @@ const state = reactive({
       <div>{{ name ?? "Undefined value" }}</div>
     </Variant>
 
+    <Variant title="Select event: String array options">
+      <div class="playground">
+        <CcList
+          :options="names"
+          :required="state.required"
+          :disabled="state.disabled"
+          @select="hstEvent('Select', { value: $event })"
+        ></CcList>
+      </div>
+    </Variant>
+
+    <Variant title="Select event: Object array options">
+      <div class="playground">
+        <CcList
+          :options="people"
+          key="name"
+          :required="state.required"
+          :disabled="state.disabled"
+          @select="hstEvent('Select', $event)"
+          v-slot="{ option }"
+        >
+          {{ option.name }} has {{ option.pet ? `a pet named ${option.pet}` : "no pet" }}
+        </CcList>
+      </div>
+    </Variant>
     <template #controls>
       <HstText v-model="state.maxHeight" title="Max Height" />
       <HstCheckbox v-model="state.required" title="Required" />

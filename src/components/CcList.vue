@@ -7,13 +7,17 @@ export interface StringProp {
   modelValue?: string | string[];
   options: string[];
   required?: boolean;
+  disabled?: boolean;
+  disableItem?: (index: number) => boolean;
 }
 
 export interface ObjectProp<T extends Record<string, unknown>> {
   modelValue?: T | T[];
   options: T[];
-  required?: boolean;
   key: KeysMatching<T, string | number>;
+  required?: boolean;
+  disabled?: boolean;
+  disableItem?: (index: number) => boolean;
 }
 
 type Props<T extends string | Record<string, unknown>> = T extends Record<string, unknown> ? ObjectProp<T> : StringProp;

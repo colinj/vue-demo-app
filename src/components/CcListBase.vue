@@ -8,15 +8,39 @@ export interface Props {
   modelValue?: ListValueType;
   options: ListOptionType[];
   required?: boolean;
+  disabled?: boolean;
+  disableItem?: (index: number) => boolean;
 }
 const props = withDefaults(defineProps<Props>(), {
   required: false,
+  disabled: false,
 });
 const emit = defineEmits<{
   (e: "update:modelValue", v: ListValueType): void;
 }>();
 
 const highlighted = ref(-1);
+const highlightOption = (index: number) => {
+  highlighted.value = index;
+};
+
+const highlightNext = () => {
+  let x = highlighted.value;
+  do {
+    x++;
+    if (x === props.options.length) x = 0;
+  } while (props.disableItem && props.disableItem(x));
+  highlighted.value = x;
+};
+
+const highlightPrev = () => {
+  let x = highlighted.value;
+  do {
+    x--;
+    if (x < 0) x = props.options.length - 1;
+  } while (props.disableItem && props.disableItem(x));
+  highlighted.value = x;
+};
 
 const optionClasses = (option: ListOptionType, index: number) => {
   return {
@@ -24,8 +48,10 @@ const optionClasses = (option: ListOptionType, index: number) => {
       ? props.modelValue.includes(option)
       : props.modelValue === option,
     "cc-list--highlighted": index === highlighted.value,
+    "cc-list--disabled": !props.disabled && props.disableItem && props.disableItem(index),
   };
 };
+
 const selectOption = (option: ListOptionType | undefined) => {
   if (option === undefined) {
     return;
@@ -41,23 +67,13 @@ const selectOption = (option: ListOptionType | undefined) => {
     emit("update:modelValue", selected);
   }
 };
-
-const highlightOption = (index: number) => {
-  highlighted.value = index;
-};
-const highlightNext = () => {
-  highlighted.value = highlighted.value < props.options.length - 1 ? highlighted.value + 1 : 0;
-};
-
-const highlightPrev = () => {
-  highlighted.value = highlighted.value > 0 ? highlighted.value - 1 : props.options.length - 1;
-};
 </script>
 
 <template>
   <ul
     class="cc-list"
-    tabindex="0"
+    :class="{ 'cc-list--disabled': props.disabled }"
+    :tabindex="props.disabled ? '-1' : '0'"
     @mouseleave="highlightOption(-1)"
     @keydown.up="highlightPrev()"
     @keydown.down="highlightNext()"

@@ -100,6 +100,22 @@ const state = reactive({
       <div>{{ personArray }}</div>
     </Variant>
 
+    <Variant title="Disable items">
+      <div class="playground">
+        <CcList
+          v-model="name"
+          :options="names"
+          :required="state.required"
+          :disabled="state.disabled"
+          :disable-item="(index) => index % 3 === 0"
+          v-slot="{ option }"
+        >
+          {{ option + " Yes. this is a string" }}
+        </CcList>
+      </div>
+      <div>{{ name ?? "Undefined value" }}</div>
+    </Variant>
+
     <template #controls>
       <HstCheckbox v-model="state.required" title="Required" />
       <HstCheckbox v-model="state.disabled" title="Disabled" />

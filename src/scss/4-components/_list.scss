@@ -14,12 +14,6 @@
 
   background-color: #fff;
 
-  outline: 0;
-
-  &:focus-visible {
-    outline: 1px auto color(blue-700);
-  }
-
   &__empty {
     @extend %cc-list-item;
     color: color(grey-400);

@@ -29,6 +29,7 @@
 
   &__item {
     @extend %cc-list-item;
+    cursor: pointer;
   }
 
   &--selected {

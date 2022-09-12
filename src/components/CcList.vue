@@ -14,7 +14,6 @@ interface Props {
 }
 const props = withDefaults(defineProps<Props>(), {
   allowEmpty: false,
-  placeholder: "Please select an option",
 });
 const emit = defineEmits<{
   (e: "update:modelValue", v: SelectValueType): void;

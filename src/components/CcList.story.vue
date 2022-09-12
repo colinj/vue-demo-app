@@ -26,7 +26,7 @@ const person = ref<Person>({} as Person);
 const personArray = ref<Person[]>([]);
 
 const state = reactive({
-  allowEmpty: false,
+  required: false,
   disabled: false,
 });
 </script>
@@ -52,7 +52,7 @@ const state = reactive({
         <CcList
           v-model="name"
           :options="names"
-          :allow-empty="state.allowEmpty"
+          :required="state.required"
           :disabled="state.disabled"
           v-slot="{ option }"
         >
@@ -67,7 +67,7 @@ const state = reactive({
         <CcList
           v-model="person"
           :options="people"
-          :allow-empty="state.allowEmpty"
+          :required="state.required"
           :disabled="state.disabled"
           key="age"
           v-slot="{ option }"
@@ -80,7 +80,7 @@ const state = reactive({
 
     <Variant title="Multi-Select: String array options">
       <div class="playground">
-        <CcList v-model="nameStringArray" :options="names" :allow-empty="state.allowEmpty" :disabled="state.disabled" />
+        <CcList v-model="nameStringArray" :options="names" :required="state.required" :disabled="state.disabled" />
       </div>
       <div>{{ nameStringArray }}</div>
     </Variant>
@@ -90,7 +90,7 @@ const state = reactive({
         <CcList
           v-model="personArray"
           :options="people"
-          :allow-empty="state.allowEmpty"
+          :required="state.required"
           :disabled="state.disabled"
           key="name"
         >
@@ -101,7 +101,7 @@ const state = reactive({
     </Variant>
 
     <template #controls>
-      <HstCheckbox v-model="state.allowEmpty" title="Allow empty" />
+      <HstCheckbox v-model="state.required" title="Required" />
       <HstCheckbox v-model="state.disabled" title="Disabled" />
     </template>
   </Story>

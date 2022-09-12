@@ -6,13 +6,13 @@ import CcListBase from "./CcListBase.vue";
 export interface StringProp {
   modelValue?: string | string[];
   options: string[];
-  allowEmpty?: boolean;
+  required?: boolean;
 }
 
 export interface ObjectProp<T extends Record<string, unknown>> {
   modelValue?: T | T[];
   options: T[];
-  allowEmpty?: boolean;
+  required?: boolean;
   key: KeysMatching<T, string | number>;
 }
 

@@ -7,10 +7,10 @@ export type ListValueType = ListOptionType | ListOptionType[] | undefined | Reco
 export interface Props {
   modelValue?: ListValueType;
   options: ListOptionType[];
-  allowEmpty?: boolean;
+  required?: boolean;
 }
 const props = withDefaults(defineProps<Props>(), {
-  allowEmpty: false,
+  required: false,
 });
 const emit = defineEmits<{
   (e: "update:modelValue", v: ListValueType): void;
@@ -33,11 +33,11 @@ const selectOption = (option: ListOptionType | undefined) => {
   if (Array.isArray(props.modelValue)) {
     const foundItem = props.modelValue.find((x) => x === option);
     const items = foundItem ? props.modelValue.filter((x) => x !== foundItem) : [...props.modelValue, option];
-    if (props.allowEmpty || items.length > 0) {
+    if (!props.required || items.length > 0) {
       emit("update:modelValue", items);
     }
   } else {
-    const selected = props.allowEmpty && option === props.modelValue ? undefined : option;
+    const selected = !props.required && option === props.modelValue ? undefined : option;
     emit("update:modelValue", selected);
   }
 };

@@ -90,7 +90,7 @@ const state = reactive({
           :options="people"
           :required="state.required"
           :disabled="state.disabled"
-          key="age"
+          option-key="age"
           v-slot="{ option }"
         >
           {{ option.name }} from the object
@@ -113,7 +113,7 @@ const state = reactive({
           :options="people"
           :required="state.required"
           :disabled="state.disabled"
-          key="name"
+          option-key="name"
         >
           <template #default="{ option }">{{ option.name }} from the object</template>
         </CcList>
@@ -152,7 +152,7 @@ const state = reactive({
       <div class="playground">
         <CcList
           :options="people"
-          key="name"
+          option-key="name"
           :required="state.required"
           :disabled="state.disabled"
           @select="hstEvent('Select', $event)"
@@ -171,7 +171,7 @@ const state = reactive({
           :max-height="state.maxHeight"
           :required="state.required"
           :disabled="state.disabled"
-          key="id"
+          option-key="id"
           v-slot="{ option }"
         >
           {{ option.name }} from the object

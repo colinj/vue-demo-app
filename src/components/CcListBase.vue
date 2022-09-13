@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch } from "vue";
+import { computed, ref, watch } from "vue";
 import { useVirtualList } from "@vueuse/core";
 
 type ListOptionType = string | Record<string, unknown>;
@@ -8,6 +8,7 @@ type ListValueType = ListOptionType | ListOptionType[] | undefined | Record<stri
 interface Props {
   modelValue?: ListValueType;
   options: ListOptionType[];
+  optionKey?: string;
   maxHeight?: string;
   required?: boolean;
   disabled?: boolean;
@@ -16,11 +17,18 @@ interface Props {
 const props = withDefaults(defineProps<Props>(), {
   required: false,
   disabled: false,
+  optionKey: "",
 });
 const emit = defineEmits<{
   (e: "update:modelValue", v: ListValueType): void;
   (e: "select", v: ListOptionType): void;
 }>();
+
+const getKeyValue = (v: ListOptionType) => (typeof v === "object" ? (v[props.optionKey] as string | number) : v);
+
+const keyValues = computed(() =>
+  props.modelValue ? [props.modelValue].flatMap<ListOptionType>((v) => v).map(getKeyValue) : []
+);
 
 const { list, containerProps, wrapperProps, scrollTo } = useVirtualList(props.options, {
   itemHeight: 32,
@@ -68,7 +76,7 @@ watch(highlighted, (val) => {
   if (val < 0) return;
   const el = listEl.value?.querySelector(`[data-index="${val}"]`);
   if (el) {
-    el.scrollIntoView({ block: "nearest" });
+    el.scrollIntoView({ block: "nearest", behavior: "smooth" });
   } else {
     scrollTo(val);
   }
@@ -76,9 +84,7 @@ watch(highlighted, (val) => {
 
 const optionClasses = (option: ListOptionType, index: number) => {
   return {
-    "cc-list--selected": Array.isArray(props.modelValue)
-      ? props.modelValue.includes(option)
-      : props.modelValue === option,
+    "cc-list--selected": keyValues.value.includes(getKeyValue(option)),
     "cc-list--highlighted": index === highlighted.value,
     "cc-list--disabled": !props.disabled && props.disableItem && props.disableItem(index),
   };
@@ -89,7 +95,8 @@ const selectOption = (option: ListOptionType | undefined) => {
     return;
   }
   if (Array.isArray(props.modelValue)) {
-    const foundItem = props.modelValue.find((x) => x === option);
+    const keyValue = getKeyValue(option);
+    const foundItem = props.modelValue.find((x) => getKeyValue(x) === keyValue);
     const items = foundItem ? props.modelValue.filter((x) => x !== foundItem) : [...props.modelValue, option];
     if (!props.required || items.length > 0) {
       emit("update:modelValue", items);

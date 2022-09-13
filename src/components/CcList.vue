@@ -15,7 +15,7 @@ export interface StringProp {
 export interface ObjectProp<T extends Record<string, unknown>> {
   modelValue?: T | T[];
   options: T[];
-  key: KeysMatching<T, string | number>;
+  optionKey: KeysMatching<T, string | number>;
   maxHeight?: string;
   required?: boolean;
   disabled?: boolean;

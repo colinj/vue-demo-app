@@ -7,9 +7,28 @@ import CommunityIcon from "./icons/IconCommunity.vue";
 import SupportIcon from "./icons/IconSupport.vue";
 import CcSelect from "./CcSelect.vue";
 import { ref } from "vue";
+import CcList from "./CcList.vue";
 
 const names = ref(["Tom", "Jane", "Peter", "Mary", "Jordan", "Polly", "Amanda", "Billy"]);
 const name = ref("");
+
+type ItemType = {
+  name: string;
+  height: number;
+  size: string;
+  id: number;
+};
+
+const manyItems = ref<ItemType[]>(
+  Array.from(Array(9999).keys()).map((i) => ({
+    name: `Item ${i}`,
+    height: i % 2 === 0 ? 42 : 84,
+    size: i % 2 === 0 ? "small" : "large",
+    id: i,
+  }))
+);
+
+const item = ref<ItemType>();
 </script>
 
 <template>
@@ -23,6 +42,10 @@ const name = ref("");
     <a target="_blank" href="https://vuejs.org/">official documentation</a>
     provides you with all information you need to get started.
   </WelcomeItem>
+
+  <CcList v-model="item" :options="manyItems" max-height="307px" key="id" v-slot="{ option }">
+    {{ option.name }}
+  </CcList>
 
   <WelcomeItem>
     <template #icon>

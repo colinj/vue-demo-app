@@ -8,7 +8,7 @@ interface Person {
   age: number;
   pet?: string;
 }
-const names = ref(["Tom", "Jane", "Peter", "Mary", "Jordan", "Polly", "Amanda", "Billy"]);
+const names = ["Tom", "Jane", "Peter", "Mary", "Jordan", "Polly", "Amanda", "Billy"];
 const people = ref<Person[]>([
   { name: "Tom", age: 23, pet: "Paddington" },
   { name: "Jane", age: 42, pet: "Fido" },
@@ -19,6 +19,24 @@ const people = ref<Person[]>([
   { name: "Amanda", age: 29 },
   { name: "Billy", age: 31, pet: "Rango" },
 ]);
+
+type ItemType = {
+  name: string;
+  height: number;
+  size: string;
+  id: number;
+};
+
+const manyItems = ref<ItemType[]>(
+  Array.from(Array(30).keys()).map((i) => ({
+    name: `Item ${i}`,
+    height: i % 2 === 0 ? 42 : 84,
+    size: i % 2 === 0 ? "small" : "large",
+    id: i,
+  }))
+);
+
+const item = ref<ItemType>(manyItems.value[0]);
 
 const name = ref<string>();
 const nameStringArray = ref<string[]>([]);
@@ -144,6 +162,24 @@ const state = reactive({
         </CcList>
       </div>
     </Variant>
+
+    <Variant title="Single Select: Object array options">
+      <div class="playground">
+        <CcList
+          v-model="item"
+          :options="manyItems"
+          :max-height="state.maxHeight"
+          :required="state.required"
+          :disabled="state.disabled"
+          key="id"
+          v-slot="{ option }"
+        >
+          {{ option.name }} from the object
+        </CcList>
+      </div>
+      <div>{{ item ?? "Undefined value!" }}</div>
+    </Variant>
+
     <template #controls>
       <HstText v-model="state.maxHeight" title="Max Height" />
       <HstCheckbox v-model="state.required" title="Required" />

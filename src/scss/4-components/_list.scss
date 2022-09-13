@@ -3,14 +3,9 @@
 }
 
 .cc-list {
-  padding: 4px 0;
-
   border: 1px solid black;
-  border-radius: 0 0 $border-radius-sm $border-radius-sm;
 
   background-color: #fff;
-
-  overflow: auto;
 
   &__empty {
     @extend %cc-list-item;

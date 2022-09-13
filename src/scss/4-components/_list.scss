@@ -1,0 +1,41 @@
+%cc-list-item {
+  padding: 4px 8px;
+}
+
+.cc-list {
+  border: 1px solid black;
+
+  background-color: #fff;
+
+  &__empty {
+    @extend %cc-list-item;
+    color: color(grey-400);
+
+    cursor: default;
+  }
+
+  &__item {
+    @extend %cc-list-item;
+    cursor: pointer;
+  }
+
+  &--selected {
+    color: #fff;
+
+    background-color: color(blue-400);
+  }
+
+  &--highlighted {
+    background-color: color(blue-200);
+
+    &.cc-list--selected {
+      background-color: color(blue-600);
+    }
+  }
+
+  &--disabled {
+    opacity: 0.4;
+
+    pointer-events: none;
+  }
+}

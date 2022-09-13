@@ -10,11 +10,14 @@ interface People {
 
 const names = ref(["Tom", "Jane", "Peter", "Mary", "Jordan", "Polly", "Amanda", "Billy"]);
 const people = ref([
-  { name: "Tom", age: 23, pet: "Pussy Galore" },
+  { name: "Tom", age: 23, pet: "Paddington" },
   { name: "Jane", age: 42, pet: "Fido" },
   { name: "Peter", age: 51 },
   { name: "Mary", age: 26, pet: "Doggo" },
   { name: "Jordan", age: 37 },
+  { name: "Polly", age: 15, pet: "Missy" },
+  { name: "Amanda", age: 29 },
+  { name: "Billy", age: 31, pet: "Rango" },
 ]);
 const name = ref<string>();
 const nameStringArray = ref<string[]>([]);

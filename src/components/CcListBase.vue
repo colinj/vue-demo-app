@@ -37,40 +37,27 @@ const { list, containerProps, wrapperProps, scrollTo } = useVirtualList(props.op
 
 const listEl = ref<HTMLDivElement | null>(null);
 
-let lastHighlighted = 0;
+const lastHighlighted = ref(0);
 const highlighted = ref(-1);
 const highlightOption = (index: number) => {
-  if (index < 0) lastHighlighted = highlighted.value;
+  if (index < 0) lastHighlighted.value = highlighted.value < 0 ? 0 : highlighted.value;
   highlighted.value = index;
 };
 
-const highlightNext = () => {
+const highlight = (updateVal: (val: number) => number, limit: number, resetVal: number) => () => {
   if (highlighted.value < 0) {
-    highlighted.value = lastHighlighted;
-    return;
+    highlighted.value = lastHighlighted.value;
+  } else {
+    let pos = highlighted.value;
+    do {
+      pos = updateVal(pos);
+      if (pos === limit) pos = resetVal;
+    } while (props.disableItem && props.disableItem(pos));
+    highlighted.value = pos;
   }
-
-  let x = highlighted.value;
-  do {
-    x++;
-    if (x === props.options.length) x = 0;
-  } while (props.disableItem && props.disableItem(x));
-  highlighted.value = x;
 };
-
-const highlightPrev = () => {
-  if (highlighted.value < 0) {
-    highlighted.value = lastHighlighted;
-    return;
-  }
-
-  let x = highlighted.value;
-  do {
-    x--;
-    if (x < 0) x = props.options.length - 1;
-  } while (props.disableItem && props.disableItem(x));
-  highlighted.value = x;
-};
+const highlightNext = highlight((v) => v + 1, props.options.length, 0);
+const highlightPrev = highlight((v) => v - 1, -1, props.options.length - 1);
 
 watch(highlighted, (val) => {
   if (val < 0) return;
@@ -131,16 +118,18 @@ const clickOption = () => {
     v-bind="containerProps"
     class="cc-list"
     :class="{ 'cc-list--disabled': props.disabled }"
-    :style="undefined"
     :tabindex="props.disabled ? '-1' : '0'"
+    :style="undefined"
     @mouseleave="highlightOption(-1)"
     @click="clickOption()"
     @keydown.up.prevent="highlightPrev()"
     @keydown.down.prevent="highlightNext()"
     @keydown.space.prevent="selectOption(props.options[highlighted])"
     @keydown.enter="selectOption(props.options[highlighted])"
+    @blur="highlightOption(-1)"
+    @focus="highlighted < 0 && highlightOption(lastHighlighted)"
   >
-    <ul v-bind="wrapperProps" ref="listEl" class="cc-list__container">
+    <ul ref="listEl" class="cc-list__container" v-bind="wrapperProps">
       <li v-if="list.length === 0" class="cc-list__empty">
         <slot name="noOptions"><em>List is empty</em></slot>
       </li>

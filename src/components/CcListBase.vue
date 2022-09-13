@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, ref, watch } from "vue";
-import { useVirtualList } from "@vueuse/core";
+import { useMouseInElement, useVirtualList } from "@vueuse/core";
 
 type ListOptionType = string | Record<string, unknown>;
 type ListValueType = ListOptionType | ListOptionType[] | undefined | Record<string, unknown>;
@@ -37,16 +37,16 @@ const { list, containerProps, wrapperProps, scrollTo } = useVirtualList(props.op
 
 const listEl = ref<HTMLDivElement | null>(null);
 
+let lastHighlighted = 0;
 const highlighted = ref(-1);
-const lastHighlighted = ref(-1);
 const highlightOption = (index: number) => {
-  if (index < 0) lastHighlighted.value = highlighted.value;
+  if (index < 0) lastHighlighted = highlighted.value;
   highlighted.value = index;
 };
 
 const highlightNext = () => {
   if (highlighted.value < 0) {
-    highlighted.value = lastHighlighted.value;
+    highlighted.value = lastHighlighted;
     return;
   }
 
@@ -60,7 +60,7 @@ const highlightNext = () => {
 
 const highlightPrev = () => {
   if (highlighted.value < 0) {
-    highlighted.value = lastHighlighted.value;
+    highlighted.value = lastHighlighted;
     return;
   }
 
@@ -79,6 +79,16 @@ watch(highlighted, (val) => {
     el.scrollIntoView({ block: "nearest", behavior: "smooth" });
   } else {
     scrollTo(val);
+  }
+});
+
+const { x, y, isOutside } = useMouseInElement(containerProps.ref);
+watch([isOutside, x, y], ([isOutside, x, y]) => {
+  if (!isOutside) {
+    const index = parseInt(document.elementFromPoint(x, y)?.getAttribute("data-index") ?? "");
+    if (!isNaN(index) && index !== highlighted.value) {
+      highlighted.value = Number(index);
+    }
   }
 });
 
@@ -134,7 +144,6 @@ const selectOption = (option: ListOptionType | undefined) => {
           class="cc-list__item"
           :class="optionClasses(option, index)"
           @click="selectOption(option)"
-          @mouseenter="highlightOption(index)"
         >
           <slot v-bind="{ option, index }">{{ option }}</slot>
         </li>

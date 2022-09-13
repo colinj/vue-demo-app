@@ -2,10 +2,10 @@
 import { ref, watch } from "vue";
 import { useVirtualList } from "@vueuse/core";
 
-export type ListOptionType = string | Record<string, unknown>;
-export type ListValueType = ListOptionType | ListOptionType[] | undefined | Record<string, unknown>;
+type ListOptionType = string | Record<string, unknown>;
+type ListValueType = ListOptionType | ListOptionType[] | undefined | Record<string, unknown>;
 
-export interface Props {
+interface Props {
   modelValue?: ListValueType;
   options: ListOptionType[];
   maxHeight?: string;

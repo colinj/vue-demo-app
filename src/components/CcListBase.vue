@@ -117,6 +117,13 @@ const selectOption = (option: ListOptionType | undefined) => {
   }
   emit("select", option);
 };
+
+const clickOption = () => {
+  const index = parseInt(document.elementFromPoint(x.value, y.value)?.getAttribute("data-index") ?? "");
+  if (!isNaN(index)) {
+    selectOption(props.options[index]);
+  }
+};
 </script>
 
 <template>
@@ -127,6 +134,7 @@ const selectOption = (option: ListOptionType | undefined) => {
     :style="undefined"
     :tabindex="props.disabled ? '-1' : '0'"
     @mouseleave="highlightOption(-1)"
+    @click="clickOption()"
     @keydown.up.prevent="highlightPrev()"
     @keydown.down.prevent="highlightNext()"
     @keydown.space.prevent="selectOption(props.options[highlighted])"
@@ -143,7 +151,6 @@ const selectOption = (option: ListOptionType | undefined) => {
           :key="index"
           class="cc-list__item"
           :class="optionClasses(option, index)"
-          @click="selectOption(option)"
         >
           <slot v-bind="{ option, index }">{{ option }}</slot>
         </li>

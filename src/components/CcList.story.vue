@@ -8,7 +8,7 @@ interface Person {
   age: number;
   pet?: string;
 }
-const names = ["Tom", "Jane", "Peter", "Mary", "Jordan", "Polly", "Amanda", "Billy"];
+const names = ref(["Tom", "Jane", "Peter", "Mary", "Jordan", "Polly", "Amanda", "Billy"]);
 const people = ref<Person[]>([
   { name: "Tom", age: 23, pet: "Paddington" },
   { name: "Jane", age: 42, pet: "Fido" },

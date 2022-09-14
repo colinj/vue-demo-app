@@ -12,7 +12,7 @@ export interface StringProp {
   disableItem?: (index: number) => boolean;
 }
 
-export interface ObjectProp<T extends Record<string, unknown>> {
+export interface ObjectProp<T> {
   modelValue?: T | T[];
   options: T[];
   optionKey: KeysMatching<T, string | number>;
@@ -22,14 +22,14 @@ export interface ObjectProp<T extends Record<string, unknown>> {
   disableItem?: (index: number) => boolean;
 }
 
-type Props<T extends string | Record<string, unknown>> = T extends Record<string, unknown> ? ObjectProp<T> : StringProp;
+type Props<T extends string | Record<string, unknown>> = T extends string ? StringProp : ObjectProp<T>;
 
 interface Slots<T> {
   default?: (context: { option: T }) => VNode[] | undefined;
   noOptions?: () => VNode[] | undefined;
 }
 
-type CcList = new <T extends string | Record<string, unknown> = string>(props: Props<T>) => {
+type CcList = new <T extends string | Record<string, unknown>>(props: Props<T>) => {
   $props: Props<T>;
   $slots: Slots<T>;
   $emit: {

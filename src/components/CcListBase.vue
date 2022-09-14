@@ -3,10 +3,10 @@ import { computed, ref, watch } from "vue";
 import { useMouseInElement, useVirtualList } from "@vueuse/core";
 
 type ListOptionType = string | Record<string, unknown>;
-type ListValueType = ListOptionType | ListOptionType[] | undefined | Record<string, unknown>;
+type ListValueType = ListOptionType | ListOptionType[];
 
 interface Props {
-  modelValue?: ListValueType;
+  modelValue?: ListValueType | undefined;
   options: ListOptionType[];
   optionKey?: string;
   maxHeight?: string;
@@ -20,7 +20,7 @@ const props = withDefaults(defineProps<Props>(), {
   optionKey: "",
 });
 const emit = defineEmits<{
-  (e: "update:modelValue", v: ListValueType): void;
+  (e: "update:modelValue", v: ListValueType | undefined): void;
   (e: "select", v: ListOptionType): void;
 }>();
 

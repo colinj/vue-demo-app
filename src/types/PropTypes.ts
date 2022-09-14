@@ -25,3 +25,6 @@ export interface TabProps<T = unknown> {
   icon?: IconName;
   data?: T;
 }
+
+export type ListItemType = string | Record<string, unknown>;
+export type ListValueType = ListItemType | ListItemType[];

@@ -48,74 +48,81 @@ const state = reactive({
   disabled: false,
   maxHeight: "200px",
 });
+
+const p = ref<Person>();
+const updateValue = () => {
+  p.value = person.value;
+};
 </script>
 
 <template>
   <Story title="CcList">
-    <Variant title="No options (empty list)">
+    <Variant title="No items (empty list)">
       <div class="playground">
-        <CcList v-model="name" :options="([] as string[])" />
+        <CcList v-model="name" :items="([] as string[])" />
       </div>
     </Variant>
 
-    <Variant title="no-options slot: No options (empty list)">
+    <Variant title="no-items slot: No items (empty list)">
       <div class="playground">
-        <CcList v-model="name" :options="([] as string[])">
-          <template #noOptions><em>Hey! You have no options available!</em></template>
+        <CcList v-model="name" :items="([] as string[])">
+          <template #emptyList><em>Hey! You have no items available!</em></template>
         </CcList>
       </div>
     </Variant>
 
-    <Variant title="Single-Select: String array options">
+    <Variant title="Single-Select: String array items">
       <div class="playground">
         <CcList
           v-model="name"
-          :options="names"
+          :items="names"
           :max-height="state.maxHeight"
           :required="state.required"
           :disabled="state.disabled"
-          v-slot="{ option }"
+          v-slot="{ item }"
           @select="hstEvent('Select', { value: $event })"
         >
-          {{ option + " Yes. this is a string" }}
+          {{ item + " Yes. this is a string" }}
         </CcList>
       </div>
       <div>{{ name ?? "Undefined value" }}</div>
     </Variant>
 
-    <Variant title="Single Select: Object array options">
+    <Variant title="Single Select: Object array items">
       <div class="playground">
         <CcList
           v-model="person"
-          :options="people"
+          :items="people"
           :required="state.required"
           :disabled="state.disabled"
-          option-key="age"
-          v-slot="{ option }"
+          item-key="age"
+          v-slot="{ item }"
+          @select="updateValue()"
         >
-          {{ option.name }} from the object
+          {{ item.name }} from the object
         </CcList>
       </div>
       <div>{{ person ?? "Undefined value!" }}</div>
+      <div>P = {{ p ?? "Undefined value!" }}</div>
     </Variant>
 
-    <Variant title="Multi-Select: String array options">
+    <Variant title="Multi-Select: String array items">
       <div class="playground">
-        <CcList v-model="nameStringArray" :options="names" :required="state.required" :disabled="state.disabled" />
+        <CcList v-model="nameStringArray" :items="names" :required="state.required" :disabled="state.disabled" />
       </div>
       <div>{{ nameStringArray }}</div>
     </Variant>
 
-    <Variant title="Multi-Select: Object array options">
+    <Variant title="Multi-Select: Object array items">
       <div class="playground">
         <CcList
           v-model="personArray"
-          :options="people"
+          :items="people"
           :required="state.required"
           :disabled="state.disabled"
-          option-key="name"
+          item-key="name"
         >
-          <template #default="{ option }">{{ option.name }} from the object</template>
+          <template #default="{ item }">{{ item.name }} from the object</template>
         </CcList>
       </div>
       <div>{{ personArray }}</div>
@@ -125,22 +132,22 @@ const state = reactive({
       <div class="playground">
         <CcList
           v-model="name"
-          :options="names"
+          :items="names"
           :required="state.required"
           :disabled="state.disabled"
           :disable-item="(index) => index % 3 === 0"
-          v-slot="{ option }"
+          v-slot="{ item }"
         >
-          {{ option + " Yes. this is a string" }}
+          {{ item + " Yes. this is a string" }}
         </CcList>
       </div>
       <div>{{ name ?? "Undefined value" }}</div>
     </Variant>
 
-    <Variant title="Select event: String array options">
+    <Variant title="Select event: String array items">
       <div class="playground">
         <CcList
-          :options="names"
+          :items="names"
           :required="state.required"
           :disabled="state.disabled"
           @select="hstEvent('Select', { value: $event })"
@@ -148,33 +155,33 @@ const state = reactive({
       </div>
     </Variant>
 
-    <Variant title="Select event: Object array options">
+    <Variant title="Select event: Object array items">
       <div class="playground">
         <CcList
-          :options="people"
-          option-key="name"
+          :items="people"
+          item-key="name"
           :required="state.required"
           :disabled="state.disabled"
           @select="hstEvent('Select', $event)"
-          v-slot="{ option }"
+          v-slot="{ item }"
         >
-          {{ option.name }} has {{ option.pet ? `a pet named ${option.pet}` : "no pet" }}
+          {{ item.name }} has {{ item.pet ? `a pet named ${item.pet}` : "no pet" }}
         </CcList>
       </div>
     </Variant>
 
-    <Variant title="Single Select: Object array options">
+    <Variant title="Single Select: Object array items">
       <div class="playground">
         <CcList
           v-model="item"
-          :options="manyItems"
+          :items="manyItems"
           :max-height="state.maxHeight"
           :required="state.required"
           :disabled="state.disabled"
-          option-key="id"
-          v-slot="{ option }"
+          item-key="id"
+          v-slot="{ item: thing }"
         >
-          {{ option.name }} from the object
+          {{ thing.name }} from the object
         </CcList>
       </div>
       <div>{{ item ?? "Undefined value!" }}</div>

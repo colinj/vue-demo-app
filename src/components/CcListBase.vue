@@ -1,36 +1,38 @@
 <script setup lang="ts">
 import { computed, ref, watch } from "vue";
 import { useMouseInElement, useVirtualList } from "@vueuse/core";
-
-type ListOptionType = string | Record<string, unknown>;
-type ListValueType = ListOptionType | ListOptionType[];
+import type { ListItemType, ListValueType } from "@/types";
 
 interface Props {
   modelValue?: ListValueType | undefined;
-  options: ListOptionType[];
-  optionKey?: string;
+  items: ListItemType[];
+  itemKey?: string;
   maxHeight?: string;
   required?: boolean;
   disabled?: boolean;
+  child?: boolean;
   disableItem?: (index: number) => boolean;
 }
 const props = withDefaults(defineProps<Props>(), {
   required: false,
   disabled: false,
-  optionKey: "",
+  itemKey: "",
+  child: false,
 });
 const emit = defineEmits<{
   (e: "update:modelValue", v: ListValueType | undefined): void;
-  (e: "select", v: ListOptionType): void;
+  (e: "select", v: ListItemType): void;
 }>();
 
-const getKeyValue = (v: ListOptionType) => (typeof v === "object" ? (v[props.optionKey] as string | number) : v);
+const getKeyValue = (v: ListItemType) => (typeof v === "object" ? (v[props.itemKey] as string | number) : v);
 
 const keyValues = computed(() =>
-  props.modelValue ? [props.modelValue].flatMap<ListOptionType>((v) => v).map(getKeyValue) : []
+  props.modelValue ? [props.modelValue].flatMap<ListItemType>((v) => v).map(getKeyValue) : []
 );
 
-const { list, containerProps, wrapperProps, scrollTo } = useVirtualList(props.options, {
+const listItems = computed(() => props.items);
+
+const { list, containerProps, wrapperProps, scrollTo } = useVirtualList(listItems, {
   itemHeight: 32,
   overscan: 10,
 });
@@ -38,8 +40,11 @@ const { list, containerProps, wrapperProps, scrollTo } = useVirtualList(props.op
 const listEl = ref<HTMLDivElement | null>(null);
 
 const lastHighlighted = ref(0);
-const highlighted = ref(-1);
-const highlightOption = (index: number) => {
+const highlighted = ref(0);
+
+watch(listItems, () => (highlighted.value = 0), { immediate: true });
+
+const highlightItem = (index: number) => {
   if (index < 0) lastHighlighted.value = highlighted.value < 0 ? 0 : highlighted.value;
   highlighted.value = index;
 };
@@ -56,8 +61,8 @@ const highlight = (updateVal: (val: number) => number, limit: number, resetVal: 
     highlighted.value = pos;
   }
 };
-const highlightNext = highlight((v) => v + 1, props.options.length, 0);
-const highlightPrev = highlight((v) => v - 1, -1, props.options.length - 1);
+const highlightNext = computed(() => highlight((v) => v + 1, props.items.length, 0));
+const highlightPrev = computed(() => highlight((v) => v - 1, -1, props.items.length - 1));
 
 watch(highlighted, (val) => {
   if (val < 0) return;
@@ -79,38 +84,48 @@ watch([isOutside, x, y], ([isOutside, x, y]) => {
   }
 });
 
-const optionClasses = (option: ListOptionType, index: number) => {
+const itemClasses = (item: ListItemType, index: number) => {
   return {
-    "cc-list--selected": keyValues.value.includes(getKeyValue(option)),
+    "cc-list--selected": keyValues.value.includes(getKeyValue(item)),
     "cc-list--highlighted": index === highlighted.value,
     "cc-list--disabled": !props.disabled && props.disableItem && props.disableItem(index),
   };
 };
 
-const selectOption = (option: ListOptionType | undefined) => {
-  if (option === undefined) {
+const selectItem = (item: ListItemType | undefined) => {
+  if (item === undefined) {
     return;
   }
   if (Array.isArray(props.modelValue)) {
-    const keyValue = getKeyValue(option);
+    const keyValue = getKeyValue(item);
     const foundItem = props.modelValue.find((x) => getKeyValue(x) === keyValue);
-    const items = foundItem ? props.modelValue.filter((x) => x !== foundItem) : [...props.modelValue, option];
+    const items = foundItem ? props.modelValue.filter((x) => x !== foundItem) : [...props.modelValue, item];
     if (!props.required || items.length > 0) {
       emit("update:modelValue", items);
     }
   } else {
-    const selected = !props.required && option === props.modelValue ? undefined : option;
+    const selected = !props.required && item === props.modelValue ? undefined : item;
     emit("update:modelValue", selected);
   }
-  emit("select", option);
+  emit("select", item);
 };
 
-const clickOption = () => {
+const clickItem = () => {
   const index = parseInt(document.elementFromPoint(x.value, y.value)?.getAttribute("data-index") ?? "");
   if (!isNaN(index)) {
-    selectOption(props.options[index]);
+    selectItem(props.items[index]);
   }
 };
+
+defineExpose({
+  highlightItem,
+  highlightNext,
+  highlightPrev,
+  selectItem,
+  selectHighlighted: () => selectItem(props.items[highlighted.value]),
+  scrollTo,
+  isOutside,
+});
 </script>
 
 <template>
@@ -120,28 +135,28 @@ const clickOption = () => {
     :class="{ 'cc-list--disabled': props.disabled }"
     :tabindex="props.disabled ? '-1' : '0'"
     :style="undefined"
-    @mouseleave="highlightOption(-1)"
-    @click="clickOption()"
+    @mouseleave="highlightItem(-1)"
+    @click="clickItem()"
     @keydown.up.prevent="highlightPrev()"
     @keydown.down.prevent="highlightNext()"
-    @keydown.space.prevent="selectOption(props.options[highlighted])"
-    @keydown.enter="selectOption(props.options[highlighted])"
-    @blur="highlightOption(-1)"
-    @focus="highlighted < 0 && highlightOption(lastHighlighted)"
+    @keydown.space.prevent="selectItem(props.items[highlighted])"
+    @keydown.enter="selectItem(props.items[highlighted])"
+    @blur="!props.child && highlightItem(-1)"
+    @focus="highlighted < 0 && highlightItem(lastHighlighted)"
   >
     <ul ref="listEl" class="cc-list__container" v-bind="wrapperProps">
       <li v-if="list.length === 0" class="cc-list__empty">
-        <slot name="noOptions"><em>List is empty</em></slot>
+        <slot name="emptyList"><em>List is empty</em></slot>
       </li>
       <template v-else>
         <li
-          v-for="{ data: option, index } in list"
+          v-for="{ data: item, index } in list"
           :data-index="index"
           :key="index"
           class="cc-list__item"
-          :class="optionClasses(option, index)"
+          :class="itemClasses(item, index)"
         >
-          <slot v-bind="{ option, index }">{{ option }}</slot>
+          <slot v-bind="{ item, index }">{{ item }}</slot>
         </li>
       </template>
     </ul>

@@ -1,41 +1,45 @@
 <script setup lang="ts">
-import { computed, nextTick, ref } from "vue";
-import {
-  onClickOutside,
-  useActiveElement,
-  useElementBounding,
-  useMouseInElement,
-  useTemplateRefsList,
-} from "@vueuse/core";
+import { computed, nextTick, ref, watch } from "vue";
+import { onClickOutside, useActiveElement, useElementBounding, useTimeoutFn } from "@vueuse/core";
 import { pluralise } from "@/utils/pluralise";
+import type { ListItemType, ListValueType } from "@/types";
 import CcIcon from "./CcIcon.vue";
 import CcPill from "./CcPill.vue";
-
-type SelectOptionType = string | Record<string, unknown>;
-
-type SelectValueType = SelectOptionType | SelectOptionType[] | undefined;
+import CcList from "./CcListBase.vue";
 
 interface Props {
-  modelValue?: SelectValueType;
+  modelValue?: ListValueType;
   placeholder?: string;
-  options: SelectOptionType[];
+  options: ListItemType[];
   optionKey?: string;
   label?: string | ((option: Record<string, unknown>) => string);
-  allowEmpty?: boolean;
+  required?: boolean;
   searchable?: boolean;
   showTags?: boolean;
+  maxHeight?: string;
 }
 const props = withDefaults(defineProps<Props>(), {
-  allowEmpty: false,
+  required: false,
   searchable: false,
   showTags: false,
+  maxHeight: "322px",
   placeholder: "Please select an option",
 });
 const emit = defineEmits<{
-  (e: "update:modelValue", v: SelectValueType): void;
+  (e: "update:modelValue", v: ListValueType | undefined): void;
 }>();
 
+const listValues = ref<ListValueType>();
+watch(
+  () => props.modelValue,
+  (val) => {
+    listValues.value = val;
+  },
+  { immediate: true, deep: true }
+);
+
 const isMultiple = computed(() => Array.isArray(props.modelValue));
+
 const inputValue = ref("");
 const inputRef = ref<HTMLInputElement | null>(null);
 const activeElement = useActiveElement();
@@ -45,30 +49,50 @@ const filteredOptions = computed(() =>
 );
 
 const isOpen = ref(false);
+const keepInDom = ref(false);
+
+const { start: removeMenu, stop: cancelRemoval } = useTimeoutFn(
+  () => {
+    keepInDom.value = false;
+  },
+  3000,
+  { immediate: false }
+);
+
 const toggleMenu = (val?: boolean) => {
+  if (val === isOpen.value) return;
+
   isOpen.value = val === undefined ? !isOpen.value : val;
   if (isOpen.value) {
+    cancelRemoval();
+    keepInDom.value = true;
     update();
-    const highlightedOption = Array.isArray(props.modelValue) ? props.modelValue[0] : props.modelValue;
+    const highlightedOption = Array.isArray(props.modelValue)
+      ? props.modelValue[props.modelValue.length - 1]
+      : props.modelValue;
     const key = getKey(highlightedOption);
     const index = filteredOptions.value.findIndex((x) => getKey(x) === key);
-    highlightOption(index < 0 ? 0 : index);
+    nextTick(() => {
+      optionEl.value?.highlightItem(index < 0 ? 0 : index);
+    });
+  } else {
+    removeMenu();
   }
   nextTick(() => {
     const el =
       props.searchable && (isOpen.value || !isMultiple.value)
         ? inputRef.value
         : isOpen.value
-        ? optionEl.value
+        ? optionEl.value?.$el
         : selectEl.value;
-    el?.focus();
+    el.focus();
   });
 };
 
 const selectEl = ref<HTMLElement | null>(null);
 onClickOutside(selectEl, () => {
-  if (isOpen.value && (!isMultiple.value || isOutside.value)) {
-    toggleMenu(false);
+  if (isOpen.value && optionEl.value?.isOutside) {
+    setTimeout(() => toggleMenu(false), 5);
   }
 });
 const { top, left, height, width, update } = useElementBounding(selectEl);
@@ -81,10 +105,7 @@ const optionsPos = computed(() => {
   };
 });
 
-const optionEl = ref<HTMLElement | null>(null);
-const { isOutside } = useMouseInElement(optionEl);
-const optionEls = useTemplateRefsList<HTMLDivElement>();
-const highlighted = ref(-1);
+const optionEl = ref<InstanceType<typeof CcList> | null>(null);
 
 const getLabelFn = computed(() => {
   if (props.label !== undefined) {
@@ -98,53 +119,32 @@ const getLabelFn = computed(() => {
   return () => "label property undefined for options object array";
 });
 
-const getLabel = (option: SelectOptionType | undefined) =>
+const getLabel = (option: ListItemType | undefined) =>
   option === undefined || typeof option === "string" ? option ?? "" : getLabelFn.value(option);
-const getKey = (option: SelectOptionType | undefined) =>
+const getKey = (option: ListItemType | undefined) =>
   option === undefined || typeof option === "string"
     ? option
     : props.optionKey
     ? option[props.optionKey]
     : getLabel(option);
 
-const optionClasses = (option: SelectOptionType, index: number) => {
-  return {
-    "cc-option--selected": Array.isArray(props.modelValue)
-      ? props.modelValue.includes(option)
-      : props.modelValue === option,
-    "cc-option--highlighted": index === highlighted.value,
-  };
-};
-const selectOption = (option: SelectOptionType | undefined) => {
-  if (option === undefined) {
-    return;
-  }
-  if (Array.isArray(props.modelValue)) {
-    const key = getKey(option);
-    const foundItem = key && props.modelValue.find((x) => getKey(x) === key);
-    const items = foundItem ? props.modelValue.filter((x) => x !== foundItem) : [...props.modelValue, option];
-    if (props.allowEmpty || items.length > 0) {
-      emit("update:modelValue", items);
-    }
-  } else {
-    const selected = props.allowEmpty && option === props.modelValue ? undefined : option;
-    emit("update:modelValue", selected);
-  }
+const selectHighlighted = () => {
+  optionEl.value?.selectHighlighted();
   inputValue.value = "";
-  if (!isMultiple.value) {
-    toggleMenu(false);
+  toggleMenu(isMultiple.value);
+};
+
+const removeOption = (option: ListItemType) => {
+  if (Array.isArray(props.modelValue)) {
+    emit(
+      "update:modelValue",
+      props.modelValue.filter((x) => x !== option)
+    );
   }
 };
-
-const highlightOption = (index: number) => {
-  highlighted.value = index;
-};
-const highlightNext = () => {
-  highlighted.value = highlighted.value < filteredOptions.value.length - 1 ? highlighted.value + 1 : 0;
-};
-
-const highlightPrev = () => {
-  highlighted.value = highlighted.value > 0 ? highlighted.value - 1 : filteredOptions.value.length - 1;
+const updateValue = () => {
+  emit("update:modelValue", listValues.value);
+  toggleMenu(isMultiple.value);
 };
 </script>
 
@@ -162,19 +162,19 @@ const highlightPrev = () => {
         <div class="cc-select__tags" @click="toggleMenu()">
           <template v-if="Array.isArray(props.modelValue)">
             <span
-              v-if="props.placeholder && props.modelValue.length === 0 && !props.allowEmpty"
+              v-if="props.placeholder && props.modelValue.length === 0 && props.required"
               class="cc-select__placeholder"
             >
               {{ props.placeholder }}
             </span>
-            <template v-else-if="props.showTags">
+            <template v-else-if="props.showTags && props.modelValue.length > 0">
               <CcPill
                 v-for="option in props.modelValue"
                 :key="(getKey(option) as string | number | undefined)"
                 size="sm"
                 :label="getLabel(option)"
-                :close="props.allowEmpty || props.modelValue.length > 1"
-                @close="selectOption(option)"
+                :close="!props.required || props.modelValue.length > 1"
+                @close="removeOption(option)"
               />
             </template>
             <span v-else>
@@ -202,12 +202,12 @@ const highlightPrev = () => {
             class="cc-select__input"
             ref="inputRef"
             v-model="inputValue"
-            @click="!isMultiple && toggleMenu(!isOpen)"
-            @keydown.up.prevent="highlightPrev()"
-            @keydown.down.prevent="highlightNext()"
+            @click="!isMultiple && toggleMenu()"
+            @keydown.up.prevent="optionEl?.highlightPrev()"
+            @keydown.down.prevent="optionEl?.highlightNext()"
             @keydown.esc.prevent="toggleMenu(false)"
             @keydown.tab.prevent="toggleMenu(false)"
-            @keydown.enter.prevent.stop="isOpen ? selectOption(filteredOptions[highlighted]) : toggleMenu(true)"
+            @keydown.enter.prevent.stop="isOpen ? selectHighlighted() : toggleMenu(true)"
           />
         </div>
       </div>
@@ -216,37 +216,23 @@ const highlightPrev = () => {
       </button>
     </div>
     <teleport to="body">
-      <ul
-        v-if="isOpen"
+      <CcList
+        v-if="keepInDom"
+        v-show="isOpen"
+        v-model="listValues"
         ref="optionEl"
-        class="cc-option"
+        class="cc-select__options"
+        :items="filteredOptions"
+        :item-key="props.optionKey"
         :style="optionsPos"
-        tabindex="-1"
-        @mouseleave="highlightOption(-1)"
-        @keydown.up="highlightPrev()"
-        @keydown.down="highlightNext()"
-        @keydown.space="selectOption(filteredOptions[highlighted])"
-        @keydown.enter="selectOption(filteredOptions[highlighted])"
-        @keydown.esc="toggleMenu(false)"
-        @keydown.tab="toggleMenu(false)"
+        :max-height="props.maxHeight"
+        :required="props.required"
+        v-slot="{ item }"
+        child
+        @select="updateValue()"
       >
-        <li v-if="filteredOptions.length === 0" class="cc-option__empty">
-          <slot name="noOptions"><em>List is empty</em></slot>
-        </li>
-        <template v-else>
-          <li
-            v-for="(option, index) in filteredOptions"
-            :key="getLabel(option)"
-            :ref="optionEls.set"
-            class="cc-option__item"
-            :class="optionClasses(option, index)"
-            @click="selectOption(option)"
-            @mouseenter="highlightOption(index)"
-          >
-            {{ getLabel(option) }}
-          </li>
-        </template>
-      </ul>
+        {{ getLabel(item) }}
+      </CcList>
     </teleport>
   </div>
 </template>

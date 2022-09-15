@@ -2,6 +2,11 @@
 import { useElementBounding, useMouseInElement } from "@vueuse/core";
 import { computed, ref } from "vue";
 
+interface Props {
+  text?: string;
+}
+const props = defineProps<Props>();
+
 const targetRef = ref<HTMLElement | null>(null);
 const { elementPositionX, elementPositionY, elementWidth, isOutside } = useMouseInElement(targetRef);
 
@@ -29,7 +34,7 @@ const tooltipStyle = computed(() => ({
       :class="{ 'cc-tooltip--active': !isOutside }"
       :style="tooltipStyle"
     >
-      <slot />
+      <slot>{{ props.text }}</slot>
     </div>
   </teleport>
 </template>

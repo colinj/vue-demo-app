@@ -5,7 +5,14 @@ import CcTooltip from "./CcTooltip.vue";
 <template>
   <Story title="CcTooltip">
     <Variant title="default">
-      <CcTooltip />
+      <div class="playground">
+        Hello this is the
+        <CcTooltip>
+          <template #target>Target word</template>
+          <span>The lengthy tooltip description about this item</span>
+        </CcTooltip>
+        in this sentence
+      </div>
     </Variant>
 
     <!-- <template #controls>
@@ -17,3 +24,8 @@ import CcTooltip from "./CcTooltip.vue";
     </template> -->
   </Story>
 </template>
+<style lang="scss" scoped>
+.playground {
+  margin-top: 100px;
+}
+</style>

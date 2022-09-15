@@ -23,7 +23,9 @@ watch(
 
 <template>
   <Story title="CcIcon">
-    <CcIcon :name="state.name" :color="color" :size="state.size" :kind="state.kind"></CcIcon>
+    <Variant title="default">
+      <CcIcon :name="state.name" :color="color" :size="state.size" :kind="state.kind"></CcIcon>
+    </Variant>
 
     <template #controls>
       <HstText v-model="state.name" title="Icon" />

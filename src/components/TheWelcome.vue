@@ -43,8 +43,8 @@ const item = ref<ItemType>();
     provides you with all information you need to get started.
   </WelcomeItem>
 
-  <CcList v-model="item" :options="manyItems" max-height="307px" option-key="id" v-slot="{ option }">
-    {{ option.name }}
+  <CcList v-model="item" :items="manyItems" max-height="307px" item-key="id" v-slot="{ item: thing }">
+    {{ thing.name }}
   </CcList>
 
   <WelcomeItem>

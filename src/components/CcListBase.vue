@@ -44,9 +44,20 @@ const highlighted = ref(0);
 
 watch(listItems, () => (highlighted.value = 0), { immediate: true });
 
+const scrollToItem = (index: number) => {
+  if (index < 0) return;
+  const el = listEl.value?.querySelector(`[data-index="${index}"]`);
+  if (el) {
+    el.scrollIntoView({ block: "nearest", behavior: "smooth" });
+  } else {
+    scrollTo(index);
+  }
+};
+
 const highlightItem = (index: number) => {
   if (index < 0) lastHighlighted.value = highlighted.value < 0 ? 0 : highlighted.value;
   highlighted.value = index;
+  scrollToItem(index);
 };
 
 const highlight = (updateVal: (val: number) => number, limit: number, resetVal: number) => () => {
@@ -60,19 +71,10 @@ const highlight = (updateVal: (val: number) => number, limit: number, resetVal: 
     } while (props.disableItem && props.disableItem(pos));
     highlighted.value = pos;
   }
+  scrollToItem(highlighted.value);
 };
 const highlightNext = computed(() => highlight((v) => v + 1, props.items.length, 0));
 const highlightPrev = computed(() => highlight((v) => v - 1, -1, props.items.length - 1));
-
-watch(highlighted, (val) => {
-  if (val < 0) return;
-  const el = listEl.value?.querySelector(`[data-index="${val}"]`);
-  if (el) {
-    el.scrollIntoView({ block: "nearest", behavior: "smooth" });
-  } else {
-    scrollTo(val);
-  }
-});
 
 const { x, y, elementPositionX, elementPositionY, isOutside } = useMouseInElement(containerProps.ref);
 
@@ -122,6 +124,7 @@ const clickItem = () => {
   if (!isNaN(index)) {
     selectItem(props.items[index]);
   }
+  scrollToItem(index);
 };
 
 defineExpose({

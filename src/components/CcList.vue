@@ -3,33 +3,33 @@ import type { VNode } from "vue";
 import type { KeysMatching } from "@/types";
 import CcListBase from "./CcListBase.vue";
 
-export interface StringProp {
+interface ListStringProps {
   modelValue?: string | string[];
-  options: string[];
+  items: string[];
   maxHeight?: string;
   required?: boolean;
   disabled?: boolean;
   disableItem?: (index: number) => boolean;
 }
 
-export interface ObjectProp<T> {
+interface ListObjectProps<T> {
   modelValue?: T | T[];
-  options: T[];
-  optionKey: KeysMatching<T, string | number>;
+  items: T[];
+  itemKey: KeysMatching<T, string | number>;
   maxHeight?: string;
   required?: boolean;
   disabled?: boolean;
   disableItem?: (index: number) => boolean;
 }
 
-type Props<T extends string | Record<string, unknown>> = T extends string ? StringProp : ObjectProp<T>;
+type Props<T> = T extends string ? ListStringProps : ListObjectProps<T>;
 
 interface Slots<T> {
-  default?: (context: { option: T }) => VNode[] | undefined;
-  noOptions?: () => VNode[] | undefined;
+  default?: (context: { item: T }) => VNode[] | undefined;
+  emptyList?: () => VNode[] | undefined;
 }
 
-type CcList = new <T extends string | Record<string, unknown>>(props: Props<T>) => {
+type CcList = new <T = string>(props: Props<T>) => {
   $props: Props<T>;
   $slots: Slots<T>;
   $emit: {

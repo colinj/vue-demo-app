@@ -74,10 +74,17 @@ watch(highlighted, (val) => {
   }
 });
 
-const { x, y, isOutside } = useMouseInElement(containerProps.ref);
+const { x, y, elementPositionX, elementPositionY, isOutside } = useMouseInElement(containerProps.ref);
+
+const getItemIndexAt = (x: number, y: number) => {
+  const pos = containerProps.ref.value?.getBoundingClientRect();
+  const [deltaX, deltaY] = pos ? [elementPositionX.value - pos.x, elementPositionY.value - pos.y] : [0, 0];
+  return parseInt(document.elementFromPoint(x - deltaX, y - deltaY)?.getAttribute("data-index") ?? "");
+};
+
 watch([isOutside, x, y], ([isOutside, x, y]) => {
   if (!isOutside) {
-    const index = parseInt(document.elementFromPoint(x, y)?.getAttribute("data-index") ?? "");
+    const index = getItemIndexAt(x, y);
     if (!isNaN(index) && index !== highlighted.value) {
       highlighted.value = Number(index);
     }
@@ -111,7 +118,7 @@ const selectItem = (item: ListItemType | undefined) => {
 };
 
 const clickItem = () => {
-  const index = parseInt(document.elementFromPoint(x.value, y.value)?.getAttribute("data-index") ?? "");
+  const index = getItemIndexAt(x.value, y.value);
   if (!isNaN(index)) {
     selectItem(props.items[index]);
   }

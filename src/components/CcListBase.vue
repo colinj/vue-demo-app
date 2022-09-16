@@ -7,7 +7,7 @@ interface Props {
   modelValue?: ListValueType | undefined;
   items: ListItemType[];
   itemKey?: string;
-  maxHeight?: string;
+  maxHeight?: number;
   required?: boolean;
   disabled?: boolean;
   child?: boolean;
@@ -29,7 +29,7 @@ const getKeyValue = (v: ListItemType) => (typeof v === "object" ? (v[props.itemK
 const keyValues = computed(() =>
   props.modelValue ? [props.modelValue].flatMap<ListItemType>((v) => v).map(getKeyValue) : []
 );
-
+const maxHeight = computed(() => (props.maxHeight ? `${props.maxHeight}px` : "none"));
 const listItems = computed(() => props.items);
 
 const { list, containerProps, wrapperProps, scrollTo } = useVirtualList(listItems, {
@@ -76,7 +76,7 @@ const highlight = (updateVal: (val: number) => number, limit: number, resetVal: 
 const highlightNext = computed(() => highlight((v) => v + 1, props.items.length, 0));
 const highlightPrev = computed(() => highlight((v) => v - 1, -1, props.items.length - 1));
 
-const { x, y, elementPositionX, elementPositionY, isOutside } = useMouseInElement(containerProps.ref);
+const { x, y, elementPositionX, elementPositionY, isOutside, elementHeight } = useMouseInElement(containerProps.ref);
 
 const getItemIndexAt = (x: number, y: number) => {
   const pos = containerProps.ref.value?.getBoundingClientRect();
@@ -135,6 +135,7 @@ defineExpose({
   selectHighlighted: () => selectItem(props.items[highlighted.value]),
   scrollTo,
   isOutside,
+  elementHeight,
 });
 </script>
 
@@ -175,6 +176,6 @@ defineExpose({
 
 <style lang="scss" scoped>
 .cc-list {
-  max-height: v-bind("props.maxHeight");
+  max-height: v-bind("maxHeight");
 }
 </style>

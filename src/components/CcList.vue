@@ -6,7 +6,7 @@ import CcListBase from "./CcListBase.vue";
 interface ListStringProps {
   modelValue?: string | string[];
   items: string[];
-  maxHeight?: string;
+  maxHeight?: number;
   required?: boolean;
   disabled?: boolean;
   disableItem?: (index: number) => boolean;
@@ -16,7 +16,7 @@ interface ListObjectProps<T> {
   modelValue?: T | T[];
   items: T[];
   itemKey: KeysMatching<T, string | number>;
-  maxHeight?: string;
+  maxHeight?: number;
   required?: boolean;
   disabled?: boolean;
   disableItem?: (index: number) => boolean;

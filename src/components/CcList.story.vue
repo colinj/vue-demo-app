@@ -46,7 +46,7 @@ const personArray = ref<Person[]>([]);
 const state = reactive({
   required: false,
   disabled: false,
-  maxHeight: "200px",
+  maxHeight: 200,
 });
 
 const p = ref<Person>();
@@ -188,7 +188,7 @@ const updateValue = () => {
     </Variant>
 
     <template #controls>
-      <HstText v-model="state.maxHeight" title="Max Height" />
+      <HstNumber v-model="state.maxHeight" title="Max Height" />
       <HstCheckbox v-model="state.required" title="Required" />
       <HstCheckbox v-model="state.disabled" title="Disabled" />
     </template>

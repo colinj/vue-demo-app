@@ -87,11 +87,28 @@
 
   &__options {
     position: absolute;
+
+    visibility: hidden;
+
+    opacity: 0;
+
+    &.open {
+      visibility: visible;
+
+      opacity: 1;
+    }
   }
 
   &--open {
-    border-bottom-right-radius: 0;
-    border-bottom-left-radius: 0;
+    &.cc-select--bottom {
+      border-bottom-right-radius: 0;
+      border-bottom-left-radius: 0;
+    }
+
+    &.cc-select--top {
+      border-top-left-radius: 0;
+      border-top-right-radius: 0;
+    }
 
     .cc-select__toggle svg {
       transform: rotate(180deg);

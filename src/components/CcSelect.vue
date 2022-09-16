@@ -10,7 +10,7 @@ interface SelectStringProps {
   required?: boolean;
   searchable?: boolean;
   showTags?: boolean;
-  maxHeight?: string;
+  maxHeight?: number;
 }
 
 interface SelectObjectProps<T> {
@@ -22,7 +22,7 @@ interface SelectObjectProps<T> {
   required?: boolean;
   searchable?: boolean;
   showTags?: boolean;
-  maxHeight?: string;
+  maxHeight?: number;
 }
 
 type Props<T> = T extends string ? SelectStringProps : SelectObjectProps<T>;

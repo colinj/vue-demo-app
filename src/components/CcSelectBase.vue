@@ -16,13 +16,13 @@ interface Props {
   required?: boolean;
   searchable?: boolean;
   showTags?: boolean;
-  maxHeight?: string;
+  maxHeight?: number;
 }
 const props = withDefaults(defineProps<Props>(), {
   required: false,
   searchable: false,
   showTags: false,
-  maxHeight: "322px",
+  maxHeight: 322,
   placeholder: "Please select an option",
 });
 const emit = defineEmits<{
@@ -32,9 +32,7 @@ const emit = defineEmits<{
 const listValues = ref<ListValueType>();
 watch(
   () => props.modelValue,
-  (val) => {
-    listValues.value = val;
-  },
+  (val) => (listValues.value = val),
   { immediate: true, deep: true }
 );
 
@@ -48,24 +46,18 @@ const filteredOptions = computed(() =>
   props.options.filter((x) => (getLabel(x)?.toLowerCase().indexOf(inputValue.value.toLowerCase()) ?? 0) >= 0)
 );
 
+const isCreated = ref(false);
 const isOpen = ref(false);
-const keepInDom = ref(false);
 
-const { start: removeMenu, stop: cancelRemoval } = useTimeoutFn(
-  () => {
-    keepInDom.value = false;
-  },
-  3000,
-  { immediate: false }
-);
+const { start: removeMenu, stop: keepMenu } = useTimeoutFn(() => (isCreated.value = false), 5000, { immediate: false });
 
 const toggleMenu = (val?: boolean) => {
   if (val === isOpen.value) return;
 
   isOpen.value = val === undefined ? !isOpen.value : val;
   if (isOpen.value) {
-    cancelRemoval();
-    keepInDom.value = true;
+    keepMenu();
+    isCreated.value = true;
     update();
     const highlightedOption = Array.isArray(props.modelValue)
       ? props.modelValue[props.modelValue.length - 1]
@@ -96,14 +88,25 @@ onClickOutside(selectEl, () => {
   }
 });
 const { top, left, height, width, update } = useElementBounding(selectEl);
+const menuBelow = computed(
+  () => window.innerHeight - top.value > Math.min(32 * (props.options.length + 1), props.maxHeight)
+);
 const optionsPos = computed(() => {
   const body = document.body.getBoundingClientRect();
+  const menuHeight = optionEl.value?.elementHeight ?? 0;
+  const topPos = top.value - body.top + (menuBelow.value ? height.value - 1 : -menuHeight + 1);
   return {
-    top: `${top.value - body.top + height.value - 1}px`,
+    top: `${topPos}px`,
     width: `${width.value}px`,
     left: `${left.value}px`,
   };
 });
+
+const selectClasses = computed(() => ({
+  "cc-select--open": isOpen.value,
+  "cc-select--bottom": menuBelow.value,
+  "cc-select--top": !menuBelow.value,
+}));
 
 const optionEl = ref<InstanceType<typeof CcList> | null>(null);
 
@@ -142,6 +145,7 @@ const removeOption = (option: ListItemType) => {
     );
   }
 };
+
 const updateValue = () => {
   emit("update:modelValue", listValues.value);
   toggleMenu(isMultiple.value);
@@ -153,7 +157,7 @@ const updateValue = () => {
     <div
       ref="selectEl"
       class="cc-select"
-      :class="{ 'cc-select--open': isOpen }"
+      :class="selectClasses"
       tabindex="0"
       @keydown.space="(!props.searchable || isMultiple) && toggleMenu()"
       @keydown.enter="(!props.searchable || isMultiple) && toggleMenu()"
@@ -217,11 +221,11 @@ const updateValue = () => {
     </div>
     <teleport to="body">
       <CcList
-        v-if="keepInDom"
-        v-show="isOpen"
+        v-if="isCreated"
         v-model="listValues"
         ref="optionEl"
         class="cc-select__options"
+        :class="{ open: isOpen }"
         :items="filteredOptions"
         :item-key="props.optionKey"
         :style="optionsPos"

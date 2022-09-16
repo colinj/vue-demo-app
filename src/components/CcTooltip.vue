@@ -4,21 +4,35 @@ import { computed, ref } from "vue";
 
 interface Props {
   text?: string;
+  pos?: "top" | "bottom";
 }
-const props = defineProps<Props>();
+const props = withDefaults(defineProps<Props>(), {
+  pos: "top",
+});
 
 const targetRef = ref<HTMLElement | null>(null);
-const { elementPositionX, elementPositionY, elementWidth, isOutside } = useMouseInElement(targetRef);
+const { elementPositionX, elementPositionY, elementHeight, elementWidth, isOutside } = useMouseInElement(targetRef);
 
 const tooltipRef = ref(null);
 const { x, width, height } = useElementBounding(tooltipRef);
 
-const tooltipStyle = computed(() => ({
-  top: `${elementPositionY.value - height.value - 8}px`,
-  left: `${Math.max(elementPositionX.value + (elementWidth.value - width.value) / 2, 4)}px`,
-  "--tt-caret-left": `${(elementWidth.value - 12) / 2 + elementPositionX.value - x.value}px`,
-  "--tt-caret-top": `${height.value - 8}px`,
-}));
+const tooltipStyle = computed(() =>
+  props.pos === "top"
+    ? {
+        top: `${elementPositionY.value - height.value - 8}px`,
+        left: `${Math.max(elementPositionX.value + (elementWidth.value - width.value) / 2, 4)}px`,
+        "--tt-caret-top": `${height.value - 8}px`,
+        "--tt-caret-left": `${(elementWidth.value - 12) / 2 + elementPositionX.value - x.value}px`,
+        "--tt-caret-rotate": "0deg",
+      }
+    : {
+        top: `${elementPositionY.value + elementHeight.value + 8}px`,
+        left: `${Math.max(elementPositionX.value + (elementWidth.value - width.value) / 2, 4)}px`,
+        "--tt-caret-top": `-10px`,
+        "--tt-caret-left": `${(elementWidth.value - 12) / 2 + elementPositionX.value - x.value}px`,
+        "--tt-caret-rotate": "180deg",
+      }
+);
 </script>
 
 <template>
@@ -74,7 +88,7 @@ const tooltipStyle = computed(() => ({
       color: color(grey-200);
       font-size: 12px;
 
-      transform: scaleX(1.3);
+      transform: rotate(var(--tt-caret-rotate)) scaleX(1.3);
     }
   }
 

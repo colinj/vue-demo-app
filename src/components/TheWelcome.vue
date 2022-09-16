@@ -8,6 +8,7 @@ import SupportIcon from "./icons/IconSupport.vue";
 import CcSelect from "./CcSelect.vue";
 import { ref } from "vue";
 import CcList from "./CcList.vue";
+import CcTooltip from "./CcTooltip.vue";
 
 const names = ref(["Tom", "Jane", "Peter", "Mary", "Jordan", "Polly", "Amanda", "Billy"]);
 const name = ref("");
@@ -43,9 +44,38 @@ const item = ref<ItemType>();
     provides you with all information you need to get started.
   </WelcomeItem>
 
-  <CcList v-model="item" :items="manyItems" max-height="307px" item-key="id" v-slot="{ item: thing }">
-    {{ thing.name }}
-  </CcList>
+  <div>
+    Howdy
+    <CcTooltip pos="top">
+      <template #target>Target</template>
+      <span>The lengthy tooltip description is extra long so it can talk about this item</span>
+    </CcTooltip>
+    word in
+    <CcTooltip
+      pos="bottom"
+      text="Ipsum lorem More lengthy tooltip description for the word 'this' is extra long so it can talk about this item"
+    >
+      <template #target>this</template>
+    </CcTooltip>
+    sentence
+  </div>
+
+  <div class="mt-10">
+    Howdy
+    <CcTooltip pos="top" hover>
+      <template #target>Target</template>
+      <span>The lengthy tooltip description is extra long so it can talk about this item</span>
+    </CcTooltip>
+    word in
+    <CcTooltip
+      pos="bottom"
+      hover
+      text="Ipsum lorem More lengthy tooltip description for the word 'this' is extra long so it can talk about this item"
+    >
+      <template #target>this</template>
+    </CcTooltip>
+    sentence
+  </div>
 
   <WelcomeItem>
     <template #icon>
@@ -71,6 +101,10 @@ const item = ref<ItemType>();
     <code>README.md</code>
     .
   </WelcomeItem>
+
+  <CcList v-model="item" :items="manyItems" max-height="307px" item-key="id" v-slot="{ item: thing }">
+    {{ thing.name }}
+  </CcList>
 
   <WelcomeItem>
     <template #icon>

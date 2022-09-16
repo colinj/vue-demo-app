@@ -1,0 +1,48 @@
+.cc-tooltip {
+  display: inline;
+
+  cursor: pointer;
+
+  &__content {
+    position: absolute;
+    z-index: 100;
+
+    display: inline-block;
+
+    max-width: min(100% - 8px, 300px);
+    padding: 2px 6px;
+
+    font-size: 0.75rem;
+
+    border-radius: 4px;
+
+    background-color: color(grey-200);
+
+    visibility: hidden;
+
+    opacity: 0;
+    filter: drop-shadow(1px 1px 1px rgba(0, 0, 0, 0.4));
+
+    transition: opacity 0.3s ease-in-out;
+
+    &::before {
+      position: absolute;
+      top: var(--tt-caret-top);
+      left: var(--tt-caret-left);
+      content: "▼";
+
+      color: color(grey-200);
+      font-size: 12px;
+
+      transform: rotate(var(--tt-caret-rotate)) scaleX(1.3);
+    }
+  }
+
+  &--active {
+    visibility: visible;
+
+    opacity: 1;
+
+    transition: opacity 0.3s ease-in-out var(--tt-delay);
+  }
+}

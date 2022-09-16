@@ -102,7 +102,7 @@ const item = ref<ItemType>();
     .
   </WelcomeItem>
 
-  <CcList v-model="item" :items="manyItems" max-height="307px" item-key="id" v-slot="{ item: thing }">
+  <CcList v-model="item" :items="manyItems" :max-height="307" item-key="id" v-slot="{ item: thing }">
     {{ thing.name }}
   </CcList>
 

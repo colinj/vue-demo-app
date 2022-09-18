@@ -19,6 +19,14 @@ export interface FieldProps {
   readonly?: Ref<boolean>;
 }
 
+export interface MenuOption {
+  id: number | string;
+  title: string;
+  description?: string;
+  icon?: IconName;
+  disabled?: boolean;
+}
+
 export interface TabProps<T = unknown> {
   id: string;
   caption: string;

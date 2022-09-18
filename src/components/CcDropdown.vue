@@ -69,11 +69,11 @@ const optionsPos = computed(() => {
 
   const leftDelta =
     props.menuPos === "left" ? 0 : props.menuPos === "right" ? width.value - menuWidth : (width.value - menuWidth) / 2;
-  const menuLeft = Math.max(left.value + leftDelta, 0);
+  const menuLeft = Math.max(Math.min(left.value + leftDelta, window.innerWidth - menuWidth - 20), 0);
   const caretLeft = left.value - menuLeft + (width.value - 16) / 2;
   return {
     top: `${menuTop}px`,
-    "min-width": `${Math.max(width.value, MIN_WIDTH)}px`,
+    width: `${Math.max(width.value, MIN_WIDTH)}px`,
     left: `${menuLeft}px`,
     "--tt-caret-top": menuBelow.value ? "-14px" : `${menuHeight + 12}px`,
     "--tt-caret-left": `${caretLeft}px`,

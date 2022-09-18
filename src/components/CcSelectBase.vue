@@ -65,7 +65,7 @@ const toggleMenu = (val?: boolean) => {
     const key = getKey(highlightedOption);
     const index = filteredOptions.value.findIndex((x) => getKey(x) === key);
     nextTick(() => {
-      optionEl.value?.highlightItem(index < 0 ? 0 : index);
+      optionsRef.value?.highlightItem(index < 0 ? 0 : index);
     });
   } else {
     removeMenu();
@@ -75,7 +75,7 @@ const toggleMenu = (val?: boolean) => {
       props.searchable && (isOpen.value || !isMultiple.value)
         ? inputRef.value
         : isOpen.value
-        ? optionEl.value?.$el
+        ? optionsRef.value?.$el
         : selectEl.value;
     el.focus();
   });
@@ -83,7 +83,7 @@ const toggleMenu = (val?: boolean) => {
 
 const selectEl = ref<HTMLElement | null>(null);
 onClickOutside(selectEl, () => {
-  if (isOpen.value && optionEl.value?.isOutside) {
+  if (isOpen.value && optionsRef.value?.isOutside) {
     setTimeout(() => toggleMenu(false), 5);
   }
 });
@@ -93,7 +93,7 @@ const menuBelow = computed(
 );
 const optionsPos = computed(() => {
   const body = document.body.getBoundingClientRect();
-  const menuHeight = optionEl.value?.elementHeight ?? 0;
+  const menuHeight = optionsRef.value?.elementHeight ?? 0;
   const topPos = top.value - body.top + (menuBelow.value ? height.value - 1 : -menuHeight + 1);
   return {
     top: `${topPos}px`,
@@ -108,7 +108,7 @@ const selectClasses = computed(() => ({
   "cc-select--top": !menuBelow.value,
 }));
 
-const optionEl = ref<InstanceType<typeof CcList> | null>(null);
+const optionsRef = ref<InstanceType<typeof CcList> | null>(null);
 
 const getLabelFn = computed(() => {
   if (props.label !== undefined) {
@@ -132,7 +132,7 @@ const getKey = (option: ListItemType | undefined) =>
     : getLabel(option);
 
 const selectHighlighted = () => {
-  optionEl.value?.selectHighlighted();
+  optionsRef.value?.selectHighlighted();
   inputValue.value = "";
   toggleMenu(isMultiple.value);
 };
@@ -207,8 +207,8 @@ const updateValue = () => {
             ref="inputRef"
             v-model="inputValue"
             @click="!isMultiple && toggleMenu()"
-            @keydown.up.prevent="optionEl?.highlightPrev()"
-            @keydown.down.prevent="optionEl?.highlightNext()"
+            @keydown.up.prevent="optionsRef?.highlightPrev()"
+            @keydown.down.prevent="optionsRef?.highlightNext()"
             @keydown.esc.prevent="toggleMenu(false)"
             @keydown.tab.prevent="toggleMenu(false)"
             @keydown.enter.prevent.stop="isOpen ? selectHighlighted() : toggleMenu(true)"
@@ -223,7 +223,7 @@ const updateValue = () => {
       <CcList
         v-if="isCreated"
         v-model="listValues"
-        ref="optionEl"
+        ref="optionsRef"
         class="cc-select__options"
         :class="{ open: isOpen }"
         :items="filteredOptions"

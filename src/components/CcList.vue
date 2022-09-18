@@ -36,6 +36,10 @@ type CcList = new <T = string>(props: Props<T>) => {
     (e: "update:modelValue", v: T | T[]): void;
     (e: "select", v: T): void;
   };
+  highlightItem: (index: number) => void;
+  isOutside: boolean;
+  elementHeight: number;
+  elementWidth: number;
 };
 
 export default CcListBase as CcList;

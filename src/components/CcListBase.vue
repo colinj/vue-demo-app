@@ -76,7 +76,9 @@ const highlight = (updateVal: (val: number) => number, limit: number, resetVal: 
 const highlightNext = computed(() => highlight((v) => v + 1, props.items.length, 0));
 const highlightPrev = computed(() => highlight((v) => v - 1, -1, props.items.length - 1));
 
-const { x, y, elementPositionX, elementPositionY, isOutside, elementHeight } = useMouseInElement(containerProps.ref);
+const { x, y, elementPositionX, elementPositionY, isOutside, elementHeight, elementWidth } = useMouseInElement(
+  containerProps.ref
+);
 
 const getItemIndexAt = (x: number, y: number) => {
   const pos = containerProps.ref.value?.getBoundingClientRect();
@@ -136,6 +138,7 @@ defineExpose({
   scrollTo,
   isOutside,
   elementHeight,
+  elementWidth,
 });
 </script>
 

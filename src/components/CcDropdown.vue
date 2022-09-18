@@ -46,7 +46,7 @@ const toggleMenu = (val?: boolean) => {
       menuRef.value?.highlightItem(index < 0 ? 0 : index);
     });
   } else {
-    entered.value = false;
+    enteredMenu.value = false;
     removeMenu();
   }
 };
@@ -92,14 +92,14 @@ const updateValue = (option: MenuOption) => {
   toggleMenu(false);
 };
 
-const entered = ref(false);
+const enteredMenu = ref(false);
 watch(
-  () => menuRef.value?.isOutside ?? false,
-  (val) => {
-    if (!val) {
-      entered.value = true;
-    } else {
-      if (entered.value) {
+  () => !menuRef.value?.isOutside,
+  (insideMenu) => {
+    if (isOpen.value) {
+      if (insideMenu) {
+        enteredMenu.value = true;
+      } else if (enteredMenu.value) {
         toggleMenu(false);
       }
     }

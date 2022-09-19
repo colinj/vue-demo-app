@@ -19,14 +19,16 @@ const emit = defineEmits<{
   (e: "update:pageSize", value: number): void;
 }>();
 
+const totalItems = computed(() => Math.max(props.totalItems, 0));
+const pageSize = computed(() => Math.max(props.pageSize, 1));
 const pageSizes = computed(() => {
-  const sizes = new Set([...props.pageSizes, props.pageSize]);
+  const sizes = new Set([...props.pageSizes, pageSize]);
   return Array.from(sizes).sort();
 });
 
 const getRange = (min: number, max: number) => [...Array(max - min + 1).keys()].map((i) => min + i);
 
-const totalPages = computed(() => Math.ceil(props.totalItems / props.pageSize));
+const totalPages = computed(() => Math.max(Math.ceil(totalItems.value / pageSize.value), 1));
 const range = computed(() => {
   return totalPages.value < 5
     ? { min: 1, max: totalPages.value }
@@ -36,43 +38,39 @@ const range = computed(() => {
     ? { min: totalPages.value - 4, max: totalPages.value }
     : { min: props.modelValue - 2, max: props.modelValue + 2 };
 });
-const firstItem = computed(() => (props.modelValue - 1) * props.pageSize + 1);
-const lastItem = computed(() => Math.min(props.modelValue * props.pageSize, props.totalItems));
+const firstItem = computed(() => (props.modelValue - 1) * pageSize.value + 1);
+const lastItem = computed(() => Math.min(props.modelValue * pageSize.value, totalItems.value));
 const isActive = (val: number) => (val === props.modelValue ? "cc-pagination--active" : null);
-const setPage = (val: number) => {
-  emit("update:modelValue", val);
-};
+const setPage = (val: number) => emit("update:modelValue", val);
 
-const pageSizeModel = ref(props.pageSize);
+const pageSizeModel = ref(pageSize.value);
 watch(pageSizeModel, (val, oldVal) => {
   const oldFirst = (props.modelValue - 1) * oldVal + 1;
   emit("update:modelValue", Math.ceil(oldFirst / val));
-  if (val !== props.pageSize) emit("update:pageSize", val);
+  if (val !== pageSize.value) emit("update:pageSize", val);
 });
 
-watch(
-  () => props.pageSize,
-  (val) => {
-    if (val !== pageSizeModel.value) {
-      pageSizeModel.value = val;
-    }
+watch(pageSize, (val) => {
+  if (val !== pageSizeModel.value) {
+    pageSizeModel.value = val;
   }
-);
+});
+watch(totalItems, (val) => {
+  if (firstItem.value > val) {
+    setPage(totalPages.value);
+  }
+});
 </script>
 
 <template>
-  <div v-if="props.totalItems > 0" class="cc-pagination">
+  <div v-if="totalItems > 0" class="cc-pagination">
     <div data-test-id="show-total-items" class="cc-pagination__description">
       <span v-if="hidePageSize">
-        showing {{ firstItem }} to {{ lastItem }} of {{ props.totalItems }} result{{
-          props.totalItems === 1 ? "" : "s"
-        }}
+        showing {{ firstItem }} to {{ lastItem }} of {{ totalItems }} result{{ totalItems === 1 ? "" : "s" }}
       </span>
       <CcDropdown v-else v-model="pageSizeModel" :options="pageSizes">
         <span>
-          showing {{ firstItem }} to {{ lastItem }} of {{ props.totalItems }} result{{
-            props.totalItems === 1 ? "" : "s"
-          }}
+          showing {{ firstItem }} to {{ lastItem }} of {{ totalItems }} result{{ totalItems === 1 ? "" : "s" }}
         </span>
       </CcDropdown>
     </div>

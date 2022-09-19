@@ -5,7 +5,7 @@ import CcPagination from "./CcPagination.vue";
 const state = reactive({
   page: 1,
   pageSize: 10,
-  totalItems: 35,
+  totalItems: 100,
 });
 </script>
 

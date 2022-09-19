@@ -81,7 +81,7 @@ const optionsPos = computed(() => {
   };
 });
 
-const selectClasses = computed(() => ({
+const dropdownClasses = computed(() => ({
   "cc-dropdown--open": isOpen.value,
   "cc-dropdown--bottom": menuBelow.value,
   "cc-dropdown--top": !menuBelow.value,
@@ -108,7 +108,7 @@ watch(
 </script>
 
 <template>
-  <div ref="targetRef" class="cc-dropdown" :class="selectClasses" @click="toggleMenu()">
+  <div ref="targetRef" class="cc-dropdown" :class="dropdownClasses" @click="toggleMenu()">
     <slot />
   </div>
   <teleport to="body">

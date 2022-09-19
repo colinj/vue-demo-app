@@ -97,11 +97,11 @@ watch([isOutside, x, y], ([isOutside, x, y]) => {
 
 const itemClasses = (item: ListItemType, index: number) => {
   return {
-    "cc-list--selected": keyValues.value.includes(getKeyValue(item)),
     "cc-list--highlighted": index === highlighted.value,
-    "cc-list--disabled": !props.disabled && props.disableItem && props.disableItem(index),
   };
 };
+
+const itemDisabled = (index: number) => (!props.disabled && props.disableItem && props.disableItem(index)) || undefined;
 
 const selectItem = (item: ListItemType | undefined) => {
   if (item === undefined) {
@@ -158,7 +158,14 @@ defineExpose({
     @blur="!props.child && highlightItem(-1)"
     @focus="highlighted < 0 && highlightItem(lastHighlighted)"
   >
-    <ul ref="listEl" class="cc-list__container" v-bind="wrapperProps">
+    <ul
+      ref="listEl"
+      class="cc-list__container"
+      v-bind="wrapperProps"
+      role="listbox"
+      :aria-multiselectable="Array.isArray(props.modelValue)"
+      :aria-disabled="props.disabled || undefined"
+    >
       <li v-if="list.length === 0" class="cc-list__empty">
         <slot name="emptyList"><em>List is empty</em></slot>
       </li>
@@ -169,6 +176,9 @@ defineExpose({
           :key="index"
           class="cc-list__item"
           :class="itemClasses(item, index)"
+          role="option"
+          :aria-selected="keyValues.includes(getKeyValue(item))"
+          :aria-disabled="itemDisabled(index)"
         >
           <slot v-bind="{ item, index }">{{ item }}</slot>
         </li>

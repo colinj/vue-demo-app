@@ -3,7 +3,9 @@
 }
 
 .cc-list {
-  border: 1px solid black;
+  $border-color: #000;
+
+  border: 1px solid $border-color;
 
   background-color: #fff;
 
@@ -19,12 +21,6 @@
     cursor: pointer;
   }
 
-  &--selected {
-    color: #fff;
-
-    background-color: color(blue-400);
-  }
-
   &--highlighted {
     background-color: color(blue-200);
 
@@ -34,6 +30,18 @@
   }
 
   &--disabled {
+    border-color: rgba($border-color, 0.4);
+
+    pointer-events: none;
+  }
+
+  [aria-selected="true"] {
+    color: #fff;
+
+    background-color: color(blue-400);
+  }
+
+  [aria-disabled="true"] {
     opacity: 0.4;
 
     pointer-events: none;

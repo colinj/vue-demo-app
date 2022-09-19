@@ -7,15 +7,22 @@ interface Props {
   modelValue: number;
   totalItems: number;
   pageSize: number;
+  pageSizes?: number[];
   hidePageSize?: boolean;
 }
 const props = withDefaults(defineProps<Props>(), {
+  pageSizes: () => [10, 20, 40, 50],
   hidePageSize: false,
 });
 const emit = defineEmits<{
   (e: "update:modelValue", value: number): void;
   (e: "update:pageSize", value: number): void;
 }>();
+
+const pageSizes = computed(() => {
+  const sizes = new Set([...props.pageSizes, props.pageSize]);
+  return Array.from(sizes).sort();
+});
 
 const getRange = (min: number, max: number) => [...Array(max - min + 1).keys()].map((i) => min + i);
 
@@ -65,7 +72,7 @@ watch(
           props.totalItems === 1 ? "" : "s"
         }}
       </span>
-      <CcDropdown v-else v-model="pageSizeModel" :options="[10, 20, 40, 60]">
+      <CcDropdown v-else v-model="pageSizeModel" :options="pageSizes">
         <span>
           showing {{ firstItem }} to {{ lastItem }} of {{ props.totalItems }} result{{
             props.totalItems === 1 ? "" : "s"

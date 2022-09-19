@@ -37,7 +37,7 @@ const { list, containerProps, wrapperProps, scrollTo } = useVirtualList(listItem
   overscan: 10,
 });
 
-const listEl = ref<HTMLDivElement | null>(null);
+const listRef = ref<HTMLDivElement | null>(null);
 
 const lastHighlighted = ref(0);
 const highlighted = ref(0);
@@ -46,7 +46,7 @@ watch(listItems, () => (highlighted.value = 0), { immediate: true });
 
 const scrollToItem = (index: number) => {
   if (index < 0) return;
-  const el = listEl.value?.querySelector(`[data-index="${index}"]`);
+  const el = listRef.value?.querySelector(`[data-index="${index}"]`);
   if (el) {
     el.scrollIntoView({ block: "nearest", behavior: "smooth" });
   } else {
@@ -159,7 +159,7 @@ defineExpose({
     @focus="highlighted < 0 && highlightItem(lastHighlighted)"
   >
     <ul
-      ref="listEl"
+      ref="listRef"
       class="cc-list__container"
       v-bind="wrapperProps"
       role="listbox"

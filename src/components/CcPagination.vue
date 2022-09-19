@@ -40,14 +40,11 @@ const firstItem = computed(() => (props.modelValue - 1) * props.pageSize + 1);
 const lastItem = computed(() => Math.min(props.modelValue * props.pageSize, props.totalItems));
 const isActive = (val: number) => (val === props.modelValue ? "cc-pagination--active" : null);
 const setPage = (val: number) => {
-  console.log("new page", val);
   emit("update:modelValue", val);
 };
 
 const pageSizeModel = ref(props.pageSize);
 watch(pageSizeModel, (val, oldVal) => {
-  console.log("dropdown");
-  console.log("pagesize", oldVal, val, "props", props.pageSize, "page", props.modelValue);
   const oldFirst = (props.modelValue - 1) * oldVal + 1;
   emit("update:modelValue", Math.ceil(oldFirst / val));
   if (val !== props.pageSize) emit("update:pageSize", val);
@@ -56,7 +53,6 @@ watch(pageSizeModel, (val, oldVal) => {
 watch(
   () => props.pageSize,
   (val) => {
-    console.log("model");
     if (val !== pageSizeModel.value) {
       pageSizeModel.value = val;
     }

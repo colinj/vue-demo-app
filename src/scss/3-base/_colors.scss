@@ -4,4 +4,8 @@
       --#{$name}-#{$index}: #{$color};
     }
   }
+
+  @each $name, $color in $colors-theme {
+    --#{$name}-color: #{$color};
+  }
 }

@@ -1,0 +1,47 @@
+.cc-alert {
+  display: grid;
+  grid-auto-flow: row;
+  grid-template:
+    "icon title close" auto
+    "icon body  close" auto
+    / 24px 1fr 24px;
+  gap: 8px 8px;
+
+  padding: 16px;
+
+  color: color(blue-800);
+
+  border: 1px solid color(blue-300);
+  border-radius: $border-radius-md;
+
+  background-color: color(blue-100);
+
+  &__close {
+    grid-area: close;
+
+    .cc-btn {
+      --btn-hover-color: #{color(blue-300)};
+      --btn-active-color: #{color(blue-600)};
+      --btn-active-text: #{color-invert(color(blue-600))};
+      padding: 5px;
+
+      border-radius: 50%;
+    }
+  }
+
+  &__icon {
+    grid-area: icon;
+
+    padding-top: 2.5px;
+  }
+
+  &__title {
+    grid-area: title;
+
+    font-weight: $font-weight-strong;
+  }
+
+  &__body {
+    grid-area: body;
+  }
+}

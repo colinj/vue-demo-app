@@ -28,8 +28,10 @@ $btn-config: (
   --btn-text: #{color-invert(map.get($btn-config, $kind, default))};
   --btn-color: #{map.get($btn-config, $kind, default)};
   --btn-border: #{map.get($btn-config, $kind, default)};
+  --btn-hover-text: #{color-invert(map.get($btn-config, $kind, hover))};
   --btn-hover-color: #{map.get($btn-config, $kind, hover)};
   --btn-hover-border: #{map.get($btn-config, $kind, hover)};
+  --btn-active-text: #{color-invert(map.get($btn-config, $kind, active))};
   --btn-active-color: #{map.get($btn-config, $kind, active)};
   --btn-active-border: #{map.get($btn-config, $kind, active)};
 }
@@ -60,12 +62,16 @@ $btn-config: (
   cursor: pointer;
 
   &:hover {
+    color: var(--btn-hover-text);
+
     border-color: var(--btn-hover-border);
 
     background-color: var(--btn-hover-color);
   }
 
   &:active {
+    color: var(--btn-active-text);
+
     border-color: var(--btn-active-border);
 
     background-color: var(--btn-active-color);

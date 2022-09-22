@@ -25,37 +25,3 @@ const initials = computed(() => {
     <span v-else>{{ initials }}</span>
   </div>
 </template>
-
-<style lang="scss" scoped>
-.cc-avatar {
-  --avatar-size: 32px;
-
-  display: inline-flex;
-  justify-content: center;
-  align-items: center;
-
-  width: var(--avatar-size);
-  height: var(--avatar-size);
-
-  color: color(grey-100);
-
-  border-radius: 50%;
-
-  background-color: color(indigo-400);
-
-  cursor: default;
-
-  overflow: hidden;
-
-  &--lg {
-    --avatar-size: 48px;
-
-    font-size: 18px;
-  }
-
-  img {
-    width: 100%;
-    height: 100%;
-  }
-}
-</style>

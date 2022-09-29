@@ -60,9 +60,6 @@ const updateValue = (target: HTMLInputElement) => {
   newPos = target.selectionStart ?? 0;
   if (updatePos) {
     target.value = integerVal + decimalVal;
-    // nextTick(() => {
-    //   inputRef.value?.setSelectionRange(target.value.length, target.value.length);
-    // });
   }
 };
 

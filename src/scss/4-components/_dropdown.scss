@@ -44,7 +44,9 @@
   }
 
   &__inner {
-    border: 0;
+    &.cc-list {
+      border: 0;
+    }
   }
 
   &--open {

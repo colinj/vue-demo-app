@@ -9,7 +9,7 @@ const state = reactive({
   icon: "" as IconName,
 });
 
-const message = ref(0);
+const numVal = ref(0);
 const fieldState = reactive({
   label: "",
   hint: "",
@@ -22,7 +22,8 @@ const fieldState = reactive({
   <Story title="CcNumberInput" :layout="{ type: 'grid', width: '100%' }">
     <Variant title="default">
       <div class="playground">
-        <CcNumberInput v-model="message" :icon="state.icon" :has-error="state.error" />
+        <CcNumberInput v-model="numVal" :icon="state.icon" :has-error="state.error" placeholder="0.00" />
+        <div>{{ numVal }}</div>
       </div>
     </Variant>
     <!-- <Variant title="Input with Field">
@@ -33,7 +34,7 @@ const fieldState = reactive({
           :error="fieldState.error"
           :required="fieldState.required"
         >
-          <CcNumberInput v-model="message" :icon="state.icon" />
+          <CcNumberInput v-model="numVal" :icon="state.icon" />
         </CcField>
       </div>
     </Variant> -->

@@ -19,3 +19,46 @@ $border-radius-md: 6px;
 $border-radius-lg: 8px;
 
 $border-color: color(grey-400);
+
+$h1-font: (
+  font: $heading-font,
+  size: $font-xxxl,
+  weight: $font-weight-strong,
+  line-height: 32px,
+  spacing: 0,
+) !default;
+
+$h2-font: (
+  font: $heading-font,
+  size: $font-xxl,
+  weight: $font-weight-strong,
+  line-height: 30px,
+  spacing: -0.02em,
+) !default;
+
+$h3-font: (
+  font: $heading-font,
+  size: $font-xl,
+  weight: $font-weight-strong,
+  line-height: 28px,
+  spacing: -0.02em,
+) !default;
+
+$h4-font: (
+  font: $heading-font,
+  size: $font-lg,
+  weight: $font-weight-strong,
+  line-height: 24px,
+  spacing: 0,
+) !default;
+
+$h5-font: (
+  font: $body-font,
+  size: $font-md,
+  weight: $font-weight-strong,
+  line-height: 24px,
+  spacing: 0,
+) !default;
+
+$text-color: color(grey-800) !default;
+$text-primary: color(blue-500) !default;

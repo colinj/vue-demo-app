@@ -1,0 +1,31 @@
+@use "sass:map";
+
+@mixin set-heading($font-props) {
+  font-weight: map.get($font-props, "weight");
+  font-size: map.get($font-props, "size");
+  font-family: map.get($font-props, "font");
+  line-height: map.get($font-props, "line-height");
+  letter-spacing: map.get($font-props, "spacing");
+}
+
+@mixin thin-scrollbars {
+  scrollbar-width: thin;
+
+  &::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: color(grey-500);
+
+    &:hover,
+    &:active {
+      background-color: color(grey-400);
+    }
+  }
+
+  &::-webkit-scrollbar-track {
+    background-color: color(grey-900);
+  }
+}

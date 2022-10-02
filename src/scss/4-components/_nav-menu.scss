@@ -1,0 +1,72 @@
+.nav-menu {
+  flex-grow: 1;
+
+  width: 100%;
+  padding: 24px 16px;
+
+  overflow-y: auto;
+
+  &__back {
+    display: flex;
+    align-items: center;
+
+    padding: 8px;
+
+    color: color(grey-300);
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  &__header {
+    display: flex;
+    align-items: center;
+
+    margin-top: 32px;
+    padding: 8px;
+
+    color: color(grey-400);
+    font-weight: 600;
+    font-size: $font-sm;
+    text-transform: uppercase;
+  }
+
+  &__item {
+    display: flex;
+    align-items: center;
+
+    width: 100%;
+    padding: 8px;
+
+    color: color(grey-400);
+    font-weight: 600;
+    text-decoration: none;
+
+    cursor: default;
+
+    @at-root a#{&}:not(.router-link-exact-active) {
+      color: white;
+
+      &:hover {
+        background-color: color(purple-600);
+
+        cursor: pointer;
+      }
+    }
+
+    &.router-link-exact-active {
+      color: white;
+
+      background-color: color(purple-900);
+    }
+
+    & + & {
+      margin-top: 8px;
+    }
+  }
+
+  svg {
+    width: 16px;
+    height: 16px;
+    margin-right: 8px;
+  }
+}

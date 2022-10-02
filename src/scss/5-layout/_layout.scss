@@ -1,0 +1,27 @@
+.flex-layout {
+  @extend %flex-layout;
+}
+
+.flex-item {
+  @extend %flex-item;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.align-center {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.flex-grow {
+  flex-grow: 1;
+}
+
+.space-between {
+  justify-content: space-between;
+}

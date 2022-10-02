@@ -1,0 +1,164 @@
+@use "sass:math";
+
+.page-layout {
+  width: 100vw;
+  height: 100vh;
+}
+
+.app-layout {
+  display: grid;
+  grid-template:
+    "header  header" 56px
+    "sidebar content" 1fr;
+  grid-template-columns: minmax(auto, 100%) 1fr;
+  gap: 0;
+
+  overflow: hidden;
+
+  &__header {
+    grid-area: header;
+
+    color: #fff;
+
+    background-color: color(purple-900);
+  }
+
+  &__sidebar {
+    --transition-timing: 0.3s;
+    grid-area: sidebar;
+
+    position: relative;
+    z-index: 20;
+
+    display: flex;
+    flex-direction: column;
+
+    background-color: color(purple-800);
+
+    transform: translateX(-100%);
+
+    overflow: hidden;
+
+    transition: 200ms ease;
+
+    &.open {
+      transform: translateX(0);
+    }
+  }
+
+  &__content {
+    grid-area: content-start / sidebar-start / content-end / content-end;
+
+    position: relative;
+
+    display: flex;
+    flex-direction: column;
+
+    overflow: auto;
+  }
+
+  @media (min-width: 641px) {
+    grid-template-columns: minmax(auto, 272px) 1fr;
+
+    &__sidebar {
+      position: relative;
+    }
+  }
+
+  @media (min-width: 993px) {
+    grid-template-columns: 272px 1fr;
+
+    &__sidebar {
+      transform: translateX(0);
+    }
+
+    &__content {
+      grid-area: content;
+    }
+  }
+}
+
+$width: 24px;
+$height: 3px;
+$gap: 8px;
+$duration: 0.1s;
+
+.menu-toggle {
+  position: relative;
+
+  display: inline-block;
+
+  width: $width;
+  height: $height;
+  margin: math.div($gap, 2) 0;
+  padding-top: 2px;
+
+  background-color: #fff;
+
+  transition: background-color $duration ease-in-out $duration;
+
+  &::before {
+    position: absolute;
+    top: -$gap;
+    content: "";
+
+    width: $width;
+    height: $height;
+
+    background-color: #fff;
+
+    transform-origin: 0% 0%;
+
+    transition: transform ($duration * 2) ease-in-out;
+  }
+
+  &::after {
+    position: absolute;
+    top: $gap;
+    content: "";
+
+    width: $width;
+    height: $height;
+
+    background-color: #fff;
+
+    transform-origin: 0% 100%;
+
+    transition: transform ($duration * 2) ease-in-out;
+  }
+
+  &--open & {
+    background-color: transparent;
+
+    transition: background-color $duration ease-in-out;
+
+    &::before {
+      transform: rotate(45deg);
+    }
+
+    &::after {
+      transform: rotate(-45deg);
+    }
+  }
+}
+
+.menu-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  z-index: -1;
+
+  background-color: transparent;
+
+  transition: none;
+
+  &--show {
+    z-index: 10;
+
+    background-color: rgba(0, 0, 0, 0.3);
+
+    transition: background-color 0.15s ease-in;
+  }
+}

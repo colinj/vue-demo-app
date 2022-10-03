@@ -18,6 +18,12 @@ const menuItems = ref<MenuOption[]>([
   },
   {
     id: 3,
+    title: "Users",
+    icon: "users",
+    to: { name: "users" },
+  },
+  {
+    id: 9,
     title: "About",
     icon: "question",
     to: { name: "about" },

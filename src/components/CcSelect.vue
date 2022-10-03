@@ -2,27 +2,26 @@
 import type { KeysMatching } from "@/types";
 import CcSelectBase from "./CcSelectBase.vue";
 
-interface SelectStringProps {
-  modelValue?: string | string[];
-  options: string[];
-  label?: (option: string) => string;
+interface SelectProps {
   placeholder?: string;
   required?: boolean;
   searchable?: boolean;
   showTags?: boolean;
   maxHeight?: number;
+  anchor?: Element | null;
 }
 
-interface SelectObjectProps<T> {
+interface SelectStringProps extends SelectProps {
+  modelValue?: string | string[];
+  options: string[];
+  label?: (option: string) => string;
+}
+
+interface SelectObjectProps<T> extends SelectProps {
   modelValue?: T | T[];
   options: T[];
   optionKey: KeysMatching<T, string | number>;
   label?: KeysMatching<T, string> | ((option: T) => string);
-  placeholder?: string;
-  required?: boolean;
-  searchable?: boolean;
-  showTags?: boolean;
-  maxHeight?: number;
 }
 
 type Props<T> = T extends string ? SelectStringProps : SelectObjectProps<T>;

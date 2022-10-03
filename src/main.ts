@@ -1,11 +1,14 @@
 import { createApp } from "vue";
 import { createPinia } from "pinia";
 
-import App from "./App.vue";
-import router from "./router";
+import App from "@/App.vue";
+import router from "@/router";
 
-import "./assets/main.css";
-import "./scss/main.scss";
+import "@/assets/main.css";
+import "@/scss/main.scss";
+import { initApiServices } from "@/api/_http";
+
+initApiServices();
 
 const app = createApp(App);
 

@@ -6,7 +6,7 @@ import EcosystemIcon from "./icons/IconEcosystem.vue";
 import CommunityIcon from "./icons/IconCommunity.vue";
 import SupportIcon from "./icons/IconSupport.vue";
 import CcSelect from "./CcSelect.vue";
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 import CcList from "./CcList.vue";
 import CcTooltip from "./CcTooltip.vue";
 
@@ -30,6 +30,12 @@ const manyItems = ref<ItemType[]>(
 );
 
 const item = ref<ItemType>();
+
+const containerRef = ref<Element | null>(null);
+
+onMounted(() => {
+  containerRef.value = document.getElementsByClassName("app-layout__content")[0];
+});
 </script>
 
 <template>
@@ -154,7 +160,7 @@ const item = ref<ItemType>();
   </WelcomeItem>
 
   <div>{{ name }}</div>
-  <CcSelect v-model="name" :options="names" allow-empty />
+  <CcSelect v-model="name" :options="names" allow-empty :anchor="containerRef" />
 
   <WelcomeItem>
     <template #icon>

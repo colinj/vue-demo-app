@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, nextTick, ref, watch } from "vue";
+import { computed, nextTick, onMounted, ref, watch } from "vue";
 import { onClickOutside, useActiveElement, useElementBounding, useTimeoutFn } from "@vueuse/core";
 import { pluralise } from "@/utils/pluralise";
 import type { ListItemType, ListValueType } from "@/types";
@@ -17,6 +17,7 @@ interface Props {
   searchable?: boolean;
   showTags?: boolean;
   maxHeight?: number;
+  anchor?: Element | null;
 }
 const props = withDefaults(defineProps<Props>(), {
   required: false,
@@ -24,6 +25,7 @@ const props = withDefaults(defineProps<Props>(), {
   showTags: false,
   maxHeight: 322,
   placeholder: "Please select an option",
+  anchor: undefined,
 });
 const emit = defineEmits<{
   (e: "update:modelValue", v: ListValueType | undefined): void;
@@ -150,6 +152,20 @@ const updateValue = () => {
   emit("update:modelValue", listValues.value);
   toggleMenu(isMultiple.value);
 };
+
+onMounted(() => {
+  if (props.anchor) {
+    props.anchor.addEventListener("scroll", update, { passive: true });
+  }
+});
+
+watch(
+  () => props.anchor,
+  (currEl, prevEl) => {
+    prevEl && prevEl.removeEventListener("scroll", update);
+    currEl && currEl.addEventListener("scroll", update, { passive: true });
+  }
+);
 </script>
 
 <template>

@@ -1,6 +1,7 @@
 import type { Ref } from "vue";
 import type { colorNames, colorShades, buttonKind, sizeType } from "@/utils/prop-types";
 import type { iconKind, iconNames } from "@/utils/icon-names";
+import type { RouteLocationRaw } from "vue-router";
 
 export type ButtonKind = typeof buttonKind[number];
 
@@ -25,6 +26,7 @@ export interface MenuOption {
   description?: string;
   icon?: IconName;
   disabled?: boolean;
+  to?: RouteLocationRaw;
 }
 
 export interface TabProps<T = unknown> {

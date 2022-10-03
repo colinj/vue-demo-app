@@ -51,7 +51,10 @@ const { fieldId, hasError, readonly } = inject(FieldKey, {});
 const id = computed(() => props.id || fieldId?.value);
 // const eventType = computed(() => (props.modelModifiers.lazy ? "change" : "input"));
 
-const stripDelimiter = (delim: string, s: string) => s.replaceAll(delim, "");
+const stripDelimiter = (delim: string, s: string) => {
+  const regex = new RegExp(delim, "g");
+  return s.replace(regex, "");
+};
 const inputVal = ref("");
 let oldInputVal = "";
 let oldSelection: InputSelection = { start: 0, end: 0 };

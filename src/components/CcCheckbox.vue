@@ -11,7 +11,7 @@ interface Props {
   options?: CheckboxOptions;
   value?: CheckboxValue;
   indeterminate?: boolean;
-  disabled: boolean;
+  disabled?: boolean;
 }
 const props = withDefaults(defineProps<Props>(), {
   indeterminate: false,

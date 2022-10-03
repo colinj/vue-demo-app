@@ -4,6 +4,7 @@ import { ref } from "vue";
 import api from "@/api";
 
 export const useUserStore = defineStore("user", () => {
+  const user = ref<Partial<UserDto>>({});
   const users = ref<UserDto[]>([]);
   const posts = ref<PostDto[]>([]);
   const comments = ref<CommentDto[]>([]);
@@ -12,6 +13,15 @@ export const useUserStore = defineStore("user", () => {
     try {
       const response = await api.getUsers();
       users.value = response.status === 200 ? response.data : [];
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const getUser = async (userId: UserId) => {
+    try {
+      const response = await api.getUser({ userId });
+      user.value = response.status === 200 ? response.data : {};
     } catch (err) {
       console.error(err);
     }
@@ -36,9 +46,11 @@ export const useUserStore = defineStore("user", () => {
   };
 
   return {
+    user,
     users,
     posts,
     comments,
+    getUser,
     getUsers,
     getPosts,
     getComments,

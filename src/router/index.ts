@@ -1,10 +1,11 @@
 import { createRouter, createWebHistory } from "vue-router";
+import { useUserStore } from "@/stores/user";
 import AppRouter from "@/modules/App/AppRouter.vue";
 import HomeView from "@/modules/Home/HomeView.vue";
 import AppMenu from "@/modules/App/AppMenu.vue";
 import CreateUser from "@/modules/Forms/CreateUser.vue";
 import UserList from "@/modules/UserPosts/UserList.vue";
-import { useUserStore } from "@/stores/user";
+import UserPosts from "@/modules/UserPosts/UserPosts.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -39,7 +40,18 @@ const router = createRouter({
             },
           },
         },
-
+        {
+          path: "users/:userId",
+          name: "user",
+          component: UserPosts,
+          meta: {
+            store: async ({ userId }) => {
+              const id = Number(userId);
+              const store = useUserStore();
+              await Promise.all([store.getUser(id), store.getPosts(id)]);
+            },
+          },
+        },
         {
           path: "about",
           name: "about",

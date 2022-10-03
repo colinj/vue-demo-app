@@ -1,6 +1,8 @@
-import { computed, reactive, readonly, ref } from "vue";
+import { computed, provide, reactive, readonly, ref } from "vue";
 import type { WritableComputedRef } from "vue";
 import type { z, ZodEffects, ZodType } from "zod";
+import { refAutoReset } from "@vueuse/core";
+import { InvalidFormKey } from "@/utils/provider-keys";
 
 export type Field<Value> = {
   name: string;
@@ -102,6 +104,30 @@ export function useZodSchema<
     return result.success;
   };
 
+  let submitCount = 0;
+  const isInvalidForm = refAutoReset(false, 600);
+  provide(InvalidFormKey, isInvalidForm);
+
+  const handleSubmit = (onSubmit: (values: Values) => void) => {
+    return async (event: Event) => {
+      event.preventDefault();
+      submitted.value = true;
+      const isValid = validate();
+      if (isValid) {
+        isSubmitting.value = true;
+        try {
+          await Promise.resolve(onSubmit(values.value));
+        } finally {
+          isSubmitting.value = false;
+          submitCount = 0;
+        }
+      } else {
+        if (submitCount > 0) isInvalidForm.value = true;
+        submitCount++;
+      }
+    };
+  };
+
   return {
     fields: reactive(fields),
     values: readonlyValues,
@@ -109,21 +135,8 @@ export function useZodSchema<
     dirty,
     touched,
     isSubmitting,
+    isInvalidForm,
     useField,
-    handleSubmit: (onSubmit: (values: Values) => void) => {
-      return async (event: Event) => {
-        event.preventDefault();
-        submitted.value = true;
-        const isValid = validate();
-        if (isValid) {
-          isSubmitting.value = true;
-          try {
-            await Promise.resolve(onSubmit(values.value));
-          } finally {
-            isSubmitting.value = false;
-          }
-        }
-      };
-    },
+    handleSubmit,
   };
 }

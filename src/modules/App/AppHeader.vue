@@ -1,7 +1,9 @@
 <script setup lang="ts">
-import { watch } from "vue";
-import { useRoute } from "vue-router";
+import { computed, watch } from "vue";
+import { useRoute, useRouter } from "vue-router";
+import { useLoginStore } from "@/stores/login";
 import CcAvatar from "@/components/CcAvatar.vue";
+import CcButton from "@/components/CcButton.vue";
 
 interface Props {
   modelValue: boolean;
@@ -11,8 +13,16 @@ const emit = defineEmits<{
   (e: "update:modelValue", v: boolean): void;
 }>();
 
-const route = useRoute();
+const store = useLoginStore();
+const loggedInUser = computed(() => store.loggedInUser);
 
+const router = useRouter();
+const logout = () => {
+  store.logout();
+  router.push("/");
+};
+
+const route = useRoute();
 watch(
   route,
   () => {
@@ -40,7 +50,11 @@ watch(
     </div>
     <div class="app-header__spacer" />
     <div class="app-header__user">
-      <CcAvatar />
+      <template v-if="loggedInUser">
+        <CcButton kind="link" @click="logout()">Sign out</CcButton>
+        <CcAvatar :name="loggedInUser.name" />
+      </template>
+      <RouterLink v-else to="/login">Sign in</RouterLink>
     </div>
   </div>
 </template>
@@ -70,6 +84,11 @@ watch(
     display: flex;
     gap: 8px;
     align-items: center;
+
+    a {
+      font-weight: $font-weight-strong;
+      text-decoration: none;
+    }
   }
 
   a {

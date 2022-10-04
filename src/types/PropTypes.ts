@@ -27,6 +27,7 @@ export interface MenuOption {
   icon?: IconName;
   disabled?: boolean;
   to?: RouteLocationRaw;
+  permission: string;
 }
 
 export interface TabProps<T = unknown> {

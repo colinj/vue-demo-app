@@ -10,6 +10,7 @@ declare module "*.vue" {
 
 declare module "vue-router" {
   interface RouteMeta {
+    permission: string;
     layout?: string;
     store?: (params: RouteParams) => Promise<unknown>;
   }

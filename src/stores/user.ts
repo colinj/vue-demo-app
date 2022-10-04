@@ -20,6 +20,11 @@ export const useUserStore = defineStore("user", () => {
 
   const getUser = async (userId: UserId) => {
     try {
+      const found = users.value.find((u) => u.id === userId);
+      if (found) {
+        user.value = found;
+        return;
+      }
       const response = await api.getUser({ userId });
       user.value = response.status === 200 ? response.data : {};
     } catch (err) {

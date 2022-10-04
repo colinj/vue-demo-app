@@ -20,8 +20,18 @@ defineProps<Props>();
 </template>
 
 <style scoped>
+a,
+.green {
+  color: hsla(160deg, 100%, 37%, 1);
+  text-decoration: none;
+
+  transition: 0.4s;
+}
+
 h1 {
   top: -10px;
+
+  margin-bottom: 1.5rem;
 
   font-weight: 500;
   font-size: 2.6rem;

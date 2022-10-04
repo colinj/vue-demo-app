@@ -36,7 +36,7 @@ const menuItems: MenuOption[] = [
 ];
 
 const loginStore = useLoginStore();
-const menu = computed(() => menuItems.filter((m) => loginStore.hasPermission(m.permission)));
+const menu = computed(() => menuItems.filter((m) => loginStore.hasPermission(m.permission ?? "public")));
 </script>
 
 <template>

@@ -16,7 +16,7 @@ const kind = ref<ButtonKind>("" as ButtonKind);
 </script>
 
 <template>
-  <Story title="CcButton" :layout="{ type: 'grid', width: '100%' }">
+  <Story title="CcButton" :layout="{ type: 'grid', width: '20vw' }">
     <Variant title="Default">
       <CcButton
         :kind="kind"

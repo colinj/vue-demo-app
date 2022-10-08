@@ -19,7 +19,7 @@ const fieldState = reactive({
 </script>
 
 <template>
-  <Story title="CcNumberInput" :layout="{ type: 'grid', width: '100%' }">
+  <Story title="CcNumberInput" :layout="{ type: 'grid', width: '500px' }">
     <Variant title="default">
       <div class="playground">
         <CcNumberInput v-model="numVal" :icon="state.icon" :has-error="state.error" placeholder="0.00" />

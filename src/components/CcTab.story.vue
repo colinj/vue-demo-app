@@ -7,7 +7,7 @@ const selected = ref("");
 </script>
 
 <template>
-  <Story title="CcTab" :layout="{ type: 'grid', width: '100%' }">
+  <Story title="CcTab" :layout="{ type: 'grid', width: '20vw' }">
     <Variant title="default">
       <CcTab v-model="selected" :tabs="tabs"></CcTab>
       <div>Tab selected: {{ selected }}</div>

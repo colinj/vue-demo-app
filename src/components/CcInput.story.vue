@@ -19,7 +19,7 @@ const fieldState = reactive({
 </script>
 
 <template>
-  <Story title="CcInput" :layout="{ type: 'grid', width: '100%' }">
+  <Story title="CcInput" :layout="{ type: 'grid', width: '500px' }">
     <Variant title="default">
       <CcInput v-model="message" :icon="state.icon" :has-error="state.error" />
     </Variant>

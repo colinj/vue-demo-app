@@ -16,12 +16,13 @@ const createService = () =>
 const assignBaseUrl = (service: AxiosInstance, baseUrl: string) => {
   service.defaults.baseURL = baseUrl;
 };
-const apiServices = {
+
+const apiServices: { [K: string]: AxiosInstance } = {
   default: createService(),
 };
 
-export const initApiServices = () => {
-  assignBaseUrl(apiServices.default, "https://jsonplaceholder.typicode.com");
+export const initApiServices = (name: string, url: string) => {
+  assignBaseUrl(apiServices[name], url);
 };
 
 const createUrl = (str: string, obj: Record<string, string | number> = {}) =>

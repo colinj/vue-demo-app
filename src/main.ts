@@ -8,7 +8,7 @@ import "@/assets/main.css";
 import "@/scss/main.scss";
 import { initApiServices } from "@/api/_http";
 
-initApiServices();
+initApiServices("default", "https://jsonplaceholder.typicode.com");
 
 const app = createApp(App);
 

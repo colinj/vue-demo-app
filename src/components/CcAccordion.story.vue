@@ -4,6 +4,7 @@ import CcAccordion from "./CcAccordion.vue";
 import CcSelect from "./CcSelect.vue";
 
 const open = ref(false);
+const names = ref<string[]>(["tom", "jake", "mary", "linda", "pamela", "peter"]);
 </script>
 
 <template>
@@ -25,7 +26,7 @@ const open = ref(false);
               Vivamus nec diam nulla. Mauris mauris lacus, rhoncus eu pharetra elementum, dictum sed quam. Proin varius
               scelerisque efficitur.
             </p>
-            <CcSelect :options="['tom', 'jake', 'mary', 'linda', 'pamela', 'peter']" />
+            <CcSelect :options="names" />
           </template>
         </CcAccordion>
       </div>

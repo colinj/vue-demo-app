@@ -7,7 +7,7 @@ const open = ref(false);
 </script>
 
 <template>
-  <Story title="CcAccordion" :layout="{ type: 'grid', width: '100%' }">
+  <Story title="CcAccordion" :layout="{ type: 'grid', width: '800px' }">
     <Variant title="default">
       <div class="story-container">
         <div class="mb-4">Accordion open: {{ open }}</div>

@@ -14,7 +14,7 @@ const indeterminate = ref(false);
 </script>
 
 <template>
-  <Story title="CcCheckbox" :layout="{ type: 'grid', width: '100%' }">
+  <Story title="CcCheckbox" :layout="{ type: 'grid', width: '20vw' }">
     <Variant title="Options string array">
       <CcCheckbox
         v-model="name1"

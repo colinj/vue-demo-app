@@ -9,7 +9,7 @@ const outline = ref(false);
 </script>
 
 <template>
-  <Story title="CcRadio" :layout="{ type: 'grid', width: '100%' }">
+  <Story title="CcRadio" :layout="{ type: 'grid', width: '300px' }">
     <Variant title="Options array">
       <CcRadio
         v-model="name1"

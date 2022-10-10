@@ -42,6 +42,7 @@ const tooltipStyle = computed(() =>
         "--tt-caret-top": `${height.value - 6}px`,
         "--tt-caret-left": `${(elementWidth.value - 12) / 2 + elementPositionX.value - x.value}px`,
         "--tt-caret-rotate": "0deg",
+        "--tt-caret-shadow": "1px",
         "--tt-delay": props.hover ? "0.6s" : "0s",
       }
     : {
@@ -50,6 +51,7 @@ const tooltipStyle = computed(() =>
         "--tt-caret-top": `-12px`,
         "--tt-caret-left": `${(elementWidth.value - 12) / 2 + elementPositionX.value - x.value}px`,
         "--tt-caret-rotate": "180deg",
+        "--tt-caret-shadow": "-1px",
         "--tt-delay": props.hover ? "0.6s" : "0s",
       }
 );

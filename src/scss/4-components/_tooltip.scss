@@ -34,8 +34,8 @@
 
       color: color(grey-200);
       font-size: 12px;
-      text-shadow: var(--tt-caret-shadow) 1px 1px rgba(0, 0, 0, 0.35);
 
+      filter: drop-shadow(var(--tt-caret-shadow) 1px 1px rgba(0, 0, 0, 0.4));
       transform: rotate(var(--tt-caret-rotate)) scaleX(1.3);
     }
   }

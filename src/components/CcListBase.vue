@@ -33,7 +33,7 @@ const maxHeight = computed(() => (props.maxHeight ? `${props.maxHeight}px` : "no
 const listItems = computed(() => props.items);
 
 const { list, containerProps, wrapperProps, scrollTo } = useVirtualList(listItems, {
-  itemHeight: 32,
+  itemHeight: 29,
   overscan: 10,
 });
 

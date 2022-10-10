@@ -75,7 +75,7 @@ const optionsPos = computed(() => {
     top: `${menuTop}px`,
     width: `${Math.max(width.value, MIN_WIDTH)}px`,
     left: `${menuLeft}px`,
-    "--tt-caret-top": menuBelow.value ? "-14px" : `${menuHeight + 12}px`,
+    "--tt-caret-top": menuBelow.value ? "-13px" : `${menuHeight + 11}px`,
     "--tt-caret-left": `${caretLeft}px`,
     "--tt-caret-rotate": menuBelow.value ? "180deg" : "0deg",
   };

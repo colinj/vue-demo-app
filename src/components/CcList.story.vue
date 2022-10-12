@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { reactive, ref } from "vue";
-import { hstEvent } from "histoire/client";
+import { logEvent } from "histoire/client";
 import CcList from "./CcList.vue";
 
 interface Person {
@@ -80,7 +80,7 @@ const updateValue = () => {
           :required="state.required"
           :disabled="state.disabled"
           v-slot="{ item }"
-          @select="hstEvent('Select', { value: $event })"
+          @select="logEvent('Select', { value: $event })"
         >
           {{ item + " Yes. this is a string" }}
         </CcList>
@@ -150,7 +150,7 @@ const updateValue = () => {
           :items="names"
           :required="state.required"
           :disabled="state.disabled"
-          @select="hstEvent('Select', { value: $event })"
+          @select="logEvent('Select', { value: $event })"
         ></CcList>
       </div>
     </Variant>
@@ -162,7 +162,7 @@ const updateValue = () => {
           item-key="name"
           :required="state.required"
           :disabled="state.disabled"
-          @select="hstEvent('Select', $event)"
+          @select="logEvent('Select', $event)"
           v-slot="{ item }"
         >
           {{ item.name }} has {{ item.pet ? `a pet named ${item.pet}` : "no pet" }}

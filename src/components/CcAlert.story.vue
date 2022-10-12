@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { reactive } from "vue";
-import { hstEvent } from "histoire/client";
+import { logEvent } from "histoire/client";
 import CcAlert from "./CcAlert.vue";
 
 const state = reactive({
@@ -13,7 +13,7 @@ const state = reactive({
   <Story title="CcAlert">
     <Variant title="default">
       <div class="playground">
-        <CcAlert v-model="state.isOpen" :dismissible="state.dismissable" @dismiss="hstEvent('dismissed', $event)">
+        <CcAlert v-model="state.isOpen" :dismissible="state.dismissable" @dismiss="logEvent('dismissed', $event)">
           Lorem ipsum dolor sit amet
           <template #content>
             Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
